@@ -6,7 +6,6 @@ public class WorldObject implements  Cloneable{
     private TypeObjet type;
 
     public WorldObject(){
-        this.type = TypeObjet.ESPACE;
 
     }
 

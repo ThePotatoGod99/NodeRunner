@@ -1,13 +1,12 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
-import hola.Simulation;
+import hola.SVector3d;
 import hola.World;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
     // TODO : Remplacer ceci par votre clé secrète
-    public static final String ROOM = "patate";
+    public static final String ROOM = "xdsimon";
 
     /* Utilisez cette variable pour choisir le niveau de départ
      *
@@ -38,7 +37,6 @@ public class Runner extends BasicRunner {
         System.out.println("Nouveau niveau ! Grille initiale reçue :");
 
         world = new World(grid);
-       
 
         for (int i = 0; i < grid.length; i++) {
             String ligne = grid[i];
@@ -58,11 +56,6 @@ public class Runner extends BasicRunner {
         frame.pack();
 
         frame.setVisible(true);
-
-        Simulation simulation = new Simulation(world, world.getFricList().get(0));
-
-        System.out.println(simulation.simulate());
-
 
         frame.addKeyListener(new KeyListener() {
             @Override
@@ -92,8 +85,6 @@ public class Runner extends BasicRunner {
                     case 'c':
                         break;
                 }
-                simulation.nextStep(direction);
-
             }
 
             @Override
@@ -101,7 +92,6 @@ public class Runner extends BasicRunner {
                 direction = Direction.NONE;
             }
         });
-
 
 
     }
@@ -116,17 +106,9 @@ public class Runner extends BasicRunner {
 //        int direction = 0;//(int) (Math.random() * 4 + 1);
 
 //        Direction dir = Direction.fromInt(direction);
-        
-//        Direction dir = direction;
-        Direction dir = executerNext(new ArrayList<Direction>());
+        Direction dir = direction;
 
 //        System.out.println("\n\n\n");
         return new Move(Event.MOVE, dir);
-    }
-    public Direction executerNext(ArrayList<Direction> directions ) {
-    	if(directions.isEmpty()==false) {
-    		return directions.remove(0);
-    	}
-    	return Direction.NONE;
     }
 }

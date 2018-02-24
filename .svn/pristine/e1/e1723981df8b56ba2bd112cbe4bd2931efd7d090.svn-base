@@ -35,6 +35,8 @@ public class World implements Cloneable {
     }
 
 
+
+
     public void addLine(String line) {
         positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
 
@@ -143,12 +145,9 @@ public class World implements Cloneable {
         }
         SVector3d oldPos = runnerObject.getPosition();
         SVector3d newPos = runnerObject.getPosition().add(positionToAdd);
-        if(!isInBounds(newPos)){
-            return false;
-        }
         WorldObject objectAtPos = this.get(newPos);
 
-        if (spaceIsAvailable(newPos)) {
+        if(spaceIsAvailable(newPos)){
             if (objectAtPos.getType().equals(TypeObjet.ESPACE)) {
 
                 change(newPos, runnerObject);
@@ -164,17 +163,9 @@ public class World implements Cloneable {
         return true;
     }
 
-    public boolean isInBounds(SVector3d position) {
-        return position.getX() <= positionOfInitalizer.getX() &&
-                position.getY() <= positionOfInitalizer.getY() &&
-                position.getX() >= 0.0 &&
-                position.getY() >= 0.0;
-    }
-
-    public void change(SVector3d position, WorldObject newObject) {
+    public void change(SVector3d position, WorldObject newObject){
         this.change((int) position.getX(), (int) position.getY(), newObject);
     }
-
     public void change(int x, int y, WorldObject newObject) {
         worldMap.get(x).set(y, newObject);
     }
@@ -193,10 +184,6 @@ public class World implements Cloneable {
 
     public WorldObject get(SVector3d position) {
         return get((int) position.getX(), (int) position.getY());
-    }
-
-    public RunnerObject getRunnerObject() {
-        return runnerObject;
     }
 
     @Override

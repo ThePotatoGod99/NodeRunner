@@ -1,6 +1,5 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
-import hola.Simulation;
 import hola.World;
 
 import javax.swing.*;
@@ -59,11 +58,6 @@ public class Runner extends BasicRunner {
 
         frame.setVisible(true);
 
-        Simulation simulation = new Simulation(world, world.getFricList().get(0));
-
-        System.out.println(simulation.simulate());
-
-
         frame.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -92,8 +86,6 @@ public class Runner extends BasicRunner {
                     case 'c':
                         break;
                 }
-                simulation.nextStep(direction);
-
             }
 
             @Override
@@ -101,7 +93,6 @@ public class Runner extends BasicRunner {
                 direction = Direction.NONE;
             }
         });
-
 
 
     }

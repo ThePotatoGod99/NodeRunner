@@ -35,6 +35,21 @@ public class World implements Cloneable {
     }
 
 
+    public void setRunnerPosition(SVector3d position) {
+        int x = (int) position.getX(), y = (int) position.getY();
+
+        /* Remplace ancienne positiondu runner */
+        worldMap.get(runnerObject.getX()).set(runnerObject.getY(), new WorldObject(runnerObject.getPosition()));
+
+        runnerObject.setPosition(position);
+
+
+        System.out.println(runnerObject.getPosition());
+        //Set runner a sa nouvelle pos
+        worldMap.get(x).set(y, runnerObject);
+    }
+
+
     public void addLine(String line) {
         positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
 
@@ -141,38 +156,14 @@ public class World implements Cloneable {
                 positionToAdd = new SVector3d(1.0, 0.0);
                 break;
         }
-        SVector3d oldPos = runnerObject.getPosition();
         SVector3d newPos = runnerObject.getPosition().add(positionToAdd);
-        if(!isInBounds(newPos)){
-            return false;
-        }
         WorldObject objectAtPos = this.get(newPos);
 
-        if (spaceIsAvailable(newPos)) {
-            if (objectAtPos.getType().equals(TypeObjet.ESPACE)) {
-
-                change(newPos, runnerObject);
-
-            } else {
-
-            }
-            runnerObject.setPosition(newPos);
-            change(oldPos, new WorldObject());
+        if(spaceIsAvailable(newPos)){
 
         }
 
         return true;
-    }
-
-    public boolean isInBounds(SVector3d position) {
-        return position.getX() <= positionOfInitalizer.getX() &&
-                position.getY() <= positionOfInitalizer.getY() &&
-                position.getX() >= 0.0 &&
-                position.getY() >= 0.0;
-    }
-
-    public void change(SVector3d position, WorldObject newObject) {
-        this.change((int) position.getX(), (int) position.getY(), newObject);
     }
 
     public void change(int x, int y, WorldObject newObject) {
@@ -193,10 +184,6 @@ public class World implements Cloneable {
 
     public WorldObject get(SVector3d position) {
         return get((int) position.getX(), (int) position.getY());
-    }
-
-    public RunnerObject getRunnerObject() {
-        return runnerObject;
     }
 
     @Override

@@ -11,11 +11,4 @@ public class RunnerObject extends WorldObject implements  Cloneable{
         this.setPosition(position);
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        RunnerObject xd = new RunnerObject(getPosition());
-        return xd;
-    }
-
-
 }

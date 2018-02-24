@@ -1,0 +1,19 @@
+package hola;
+
+import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
+
+public class Simulation {
+
+    private World world;
+    private WorldObject destination;
+    public Simulation(World world, WorldObject destination){
+        this.world =  (World) world.clone();
+        this.destination = destination;
+    }
+
+    public void nextStep(Direction direction){
+
+    }
+
+
+}
