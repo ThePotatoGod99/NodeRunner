@@ -1,13 +1,12 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
-import hola.Simulation;
+import hola.SVector3d;
 import hola.World;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
     // TODO : Remplacer ceci par votre clé secrète
-    public static final String ROOM = "andylecool";
+    public static final String ROOM = "patate";
 
     /* Utilisez cette variable pour choisir le niveau de départ
      *
@@ -29,7 +28,7 @@ public class Runner extends BasicRunner {
     }
 
     private World world;
-    private ArrayList<Direction> directions = new ArrayList<Direction>();
+
 
     private Direction direction = Direction.NONE;
 
@@ -38,7 +37,6 @@ public class Runner extends BasicRunner {
         System.out.println("Nouveau niveau ! Grille initiale reçue :");
 
         world = new World(grid);
-       
 
         for (int i = 0; i < grid.length; i++) {
             String ligne = grid[i];
@@ -58,6 +56,7 @@ public class Runner extends BasicRunner {
         frame.pack();
 
         frame.setVisible(true);
+
 
 //        Simulation simulation = new Simulation(world, world.getFricList().get(0));
 //        System.out.println(simulation.simulate());
@@ -102,33 +101,19 @@ public class Runner extends BasicRunner {
         });
 
 
-
-
     }
 
     @Override
     public Move next(int x, int y) {
 //        System.out.println("Position du runner : (" + x + ", " + y + ")");
-//        world.print();
-        world.move(direction);
         world.print();
-//        world.setRunnerPosition(new SVector3d(x, y));
 
 //        int direction = 0;//(int) (Math.random() * 4 + 1);
 
 //        Direction dir = Direction.fromInt(direction);
-        
-//        Direction dir = direction;
-        directions.add(direction);
-        Direction dir = executerNext(directions);
+        Direction dir = direction;
 
-//        System.out.println("\n\n\n");
+        System.out.println("\n\n\n");
         return new Move(Event.MOVE, dir);
-    }
-    public Direction executerNext(ArrayList<Direction> directions ) {
-    	if(directions.isEmpty()==false) {
-    		return directions.remove(0);
-    	}
-    	return Direction.NONE;
     }
 }

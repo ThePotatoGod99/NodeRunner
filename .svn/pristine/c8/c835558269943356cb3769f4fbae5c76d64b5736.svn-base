@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
     // TODO : Remplacer ceci par votre clé secrète
-    public static final String ROOM = "andylecool";
+    public static final String ROOM = "patate";
 
     /* Utilisez cette variable pour choisir le niveau de départ
      *
@@ -29,7 +29,7 @@ public class Runner extends BasicRunner {
     }
 
     private World world;
-    private ArrayList<Direction> directions = new ArrayList<Direction>();
+
 
     private Direction direction = Direction.NONE;
 
@@ -103,7 +103,6 @@ public class Runner extends BasicRunner {
 
 
 
-
     }
 
     @Override
@@ -111,7 +110,6 @@ public class Runner extends BasicRunner {
 //        System.out.println("Position du runner : (" + x + ", " + y + ")");
 //        world.print();
         world.move(direction);
-        world.print();
 //        world.setRunnerPosition(new SVector3d(x, y));
 
 //        int direction = 0;//(int) (Math.random() * 4 + 1);
@@ -119,8 +117,7 @@ public class Runner extends BasicRunner {
 //        Direction dir = Direction.fromInt(direction);
         
 //        Direction dir = direction;
-        directions.add(direction);
-        Direction dir = executerNext(directions);
+        Direction dir = executerNext(new ArrayList<Direction>());
 
 //        System.out.println("\n\n\n");
         return new Move(Event.MOVE, dir);
