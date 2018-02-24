@@ -20,7 +20,7 @@ public class World implements Cloneable {
     public boolean dontComeBack = false;
     private String[] grid;
 
-    private ArrayList<SVector3d> visitedList = new ArrayList<SVector3d>();
+	private ArrayList<SVector3d> visitedList = new ArrayList<SVector3d>();
 
 
     public World(String[] grid) {
@@ -34,12 +34,7 @@ public class World implements Cloneable {
             String ligne = grid[i];
             this.addLine(ligne);
         }
-        cheminement = new Cheminement(this, this.getRunnerObject(), this.getPorte());
-    }
-
-    public World(String[] grid, boolean dontComeBack) {
-        this(grid);
-        this.dontComeBack = dontComeBack;
+        cheminement = new Cheminement(this, this.getRunnerObject(),this.getPorte());
     }
 
 
@@ -142,14 +137,14 @@ public class World implements Cloneable {
     }
 
 
-    public void moveRunner(SVector3d destination) {
+
+    public void moveRunner(SVector3d destination){
         SVector3d oldPos = runnerObject.getPosition();
-        if (!get(oldPos).equals(runnerObject)) {
+        if(!get(oldPos).equals(runnerObject)){
             change(oldPos, new WorldObject());
         }
         runnerObject.setPosition(destination);
     }
-
     public boolean move(Direction direction) {
         SVector3d positionToAdd = new SVector3d();
         switch (direction) {
@@ -249,9 +244,13 @@ public class World implements Cloneable {
     }
 
 
-    public Cheminement getCheminement() {
-        return cheminement;
-    }
+
+
+
+
+	public Cheminement getCheminement() {
+		return cheminement;
+	}
 
     public ArrayList<SVector3d> getVisitedList() {
         return visitedList;
@@ -262,7 +261,8 @@ public class World implements Cloneable {
     }
 
 
-    public String[] getStringList() {
+
+    public String[] getStringList(){
         String[] stringList = new String[(int) positionOfInitalizer.getY()];
         int x = 0, y = 0;
         while (y < (int) positionOfInitalizer.getY()) {
@@ -279,39 +279,5 @@ public class World implements Cloneable {
 
 
         return stringList;
-    }
-
-    public void printString() {
-      /*  String[] stringList = getStringList();
-        for (String string : stringList) {
-            System.out.println(string);
-        }*/
-
-        String[] stringList = new String[(int) positionOfInitalizer.getY()];
-        int x = 0, y = 0;
-        while (y < (int) positionOfInitalizer.getY()) {
-
-            String string = "";
-            while (x < (int) positionOfInitalizer.getX()) {
-                if (visitedList.contains(new SVector3d((double) x, (double) y))) {
-                    string += "X";
-                } else {
-                    string += get(x, y).toString();
-                }
-                x++;
-            }
-            System.out.println(string);
-            stringList[y] = string;
-            x = 0;
-            y++;
-
-
-        }
-    }
-
-    public World worldCopy(ArrayList<SVector3d> visitedList) {
-        World world = new World(getStringList());
-        world.setVisitedList((ArrayList<SVector3d>) visitedList.clone());
-        return world;
     }
 }

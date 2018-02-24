@@ -10,7 +10,7 @@ import java.util.Collections;
 public class Simulation {
 
     private World world;
-    private SVector3d destination;
+    private WorldObject destination;
 
 
     private int[] directionChoices = {2, 3, 4, 1};
@@ -22,57 +22,14 @@ public class Simulation {
 
     private ArrayList<Direction> directionsList = new ArrayList<>();
 
-    public Simulation(World world, SVector3d destination) {
-        this.world =  new World(world.getStringList(), true);
-
-        world.getVisitedList().add(new SVector3d(1, 4.0));
-        System.out.println(world.getVisitedList());
-
-        System.out.println(this.world.getVisitedList());
-
-        world.dontComeBack = true;
+    public Simulation(World world, WorldObject destination) {
+        this.world = (World) world.clone();
         this.destination = destination;
     }
 
     public ArrayList<Direction> simulate() {
 
-        int remainingTries = 10;
-//        while (true) {
-            System.out.println(world.getRunnerObject().getPosition() + " REMAINING*  " + remainingTries);
-            ArrayList<Direction> direction1 = XdSimulation.simulation0(world, destination, remainingTries ).simulate();
-//            ArrayList<Direction> direction2 = XdSimulation.simulation2(world, destination, remainingTries ).simulate();
-//            ArrayList<Direction> direction3 = XdSimulation.simulation3(world, destination, remainingTries ).simulate();
-//            ArrayList<Direction> direction4 = XdSimulation.simulation4(world, destination, remainingTries ).simulate();
-
-            if (direction1 != null) {
-                directionsList.addAll(direction1);
-                return directionsList;
-            }
-
-//            if (direction2 != null) {
-//                directionsList.addAll(direction2);
-//                return directionsList;
-//            }
-//            if (direction3 != null) {
-//                directionsList.addAll(direction3);
-//                return directionsList;
-//            }
-//            if (direction4 != null) {
-//                directionsList.addAll(direction4);
-//                return directionsList;
-//            }
-
-   /*         remainingTries++;
-            if(remainingTries >= 10){
-                System.out.println("ASDFASDF 100");
-                return directionsList;
-            }
-        }*/
-
-   return directionsList;
-
-
-
+        int direction = directionChoices[0];
 //        nextStep(direction);
 
       /*  ArrayList<Direction> directions1 = new XdSimulation(world, Direction.LEFT, 0).simulate();
@@ -114,6 +71,7 @@ public class Simulation {
         }
 
         */
+        return null;
 
     }
 
@@ -140,6 +98,30 @@ public class Simulation {
 ////    public boolean nextStep(Direction direction) {
 //
 //    }
+
+
+    public class XdSimulation {
+        private World world;
+        private Direction direction;
+        private ArrayList<Direction> directionsList = new ArrayList<>();
+
+
+        int maxShit;
+
+        int remainingTries = 0;
+
+        public XdSimulation(World world, Direction direction, SVector3d destination, int remainingTries) {
+            this.world = (World) world.clone();
+            this.direction = direction;
+            this.remainingTries = remainingTries;
+        }
+
+        public ArrayList<Direction> simulate() {
+
+
+return null;
+        }
+    }
 
 
 }

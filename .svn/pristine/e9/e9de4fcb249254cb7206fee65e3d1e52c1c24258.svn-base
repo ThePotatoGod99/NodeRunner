@@ -1,7 +1,9 @@
 package hola;
 
 import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
+import main.java.ca.umontreal.iro.hackathon.loderunner.Runner;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class World implements Cloneable {
@@ -17,11 +19,9 @@ public class World implements Cloneable {
     private SVector3d positionOfInitalizer = new SVector3d();
 
 
-    public boolean dontComeBack = false;
     private String[] grid;
 
-    private ArrayList<SVector3d> visitedList = new ArrayList<SVector3d>();
-
+	private ArrayList<SVector3d> visitedList;
 
     public World(String[] grid) {
         this.grid = grid;
@@ -34,12 +34,7 @@ public class World implements Cloneable {
             String ligne = grid[i];
             this.addLine(ligne);
         }
-        cheminement = new Cheminement(this, this.getRunnerObject(), this.getPorte());
-    }
-
-    public World(String[] grid, boolean dontComeBack) {
-        this(grid);
-        this.dontComeBack = dontComeBack;
+        cheminement = new Cheminement(this, this.getRunnerObject(),this.getPorte());
     }
 
 
@@ -141,15 +136,6 @@ public class World implements Cloneable {
 
     }
 
-
-    public void moveRunner(SVector3d destination) {
-        SVector3d oldPos = runnerObject.getPosition();
-        if (!get(oldPos).equals(runnerObject)) {
-            change(oldPos, new WorldObject());
-        }
-        runnerObject.setPosition(destination);
-    }
-
     public boolean move(Direction direction) {
         SVector3d positionToAdd = new SVector3d();
         switch (direction) {
@@ -163,7 +149,7 @@ public class World implements Cloneable {
                 positionToAdd = new SVector3d(-1.0, 0.0);
                 break;
             case NONE:
-                return true;
+                break;
             case RIGHT:
                 positionToAdd = new SVector3d(1.0, 0.0);
                 break;
@@ -186,8 +172,8 @@ public class World implements Cloneable {
             return false;
         }
 
-        if (spaceIsAvailable(newPos) && !(dontComeBack && isVisited(newPos))) {
 
+        if (spaceIsAvailable(newPos) ){//&& !isVisited(newPos)) {
             if (objectAtPos.getType().equals(TypeObjet.ESPACE)) {
 
                 change(newPos, runnerObject);
@@ -195,18 +181,16 @@ public class World implements Cloneable {
             } else {
 
             }
-//            runnerObject.setPosition(newPos);
+            runnerObject.setPosition(newPos);
 
-            moveRunner(newPos);
             visitedList.add(oldPos);
 
 
-//            if (objectAtOld.getType().equals(TypeObjet.RUNNER) ){//|| objectAtOld.getType().equals(TypeObjet.FRIC)) {
-//                change(oldPos, new WorldObject());
-//            }
+            if (objectAtOld.getType().equals(TypeObjet.RUNNER) ){//|| objectAtOld.getType().equals(TypeObjet.FRIC)) {
+                change(oldPos, new WorldObject(TypeObjet.VISITED, oldPos));
+            }
 
         } else {
-
             return false;
         }
 
@@ -248,10 +232,27 @@ public class World implements Cloneable {
         return runnerObject;
     }
 
+    @Override
+    protected Object clone() {
+        try {
 
-    public Cheminement getCheminement() {
-        return cheminement;
+            World world = new World(grid);
+            world.worldMap = (ArrayList) this.worldMap.clone();
+            world.runnerObject = (RunnerObject) runnerObject.clone();
+            world.porte = (WorldObject) porte.clone();
+            world.fricList = (ArrayList) this.fricList.clone();
+            world.positionOfInitalizer = new SVector3d(positionOfInitalizer.getX(), positionOfInitalizer.getY());
+            return world;
+        } catch (Exception e) {
+            System.err.println(e);
+            return null;
+        }
     }
+
+
+	public Cheminement getCheminement() {
+		return cheminement;
+	}
 
     public ArrayList<SVector3d> getVisitedList() {
         return visitedList;
@@ -259,59 +260,5 @@ public class World implements Cloneable {
 
     public void setVisitedList(ArrayList<SVector3d> visitedList) {
         this.visitedList = visitedList;
-    }
-
-
-    public String[] getStringList() {
-        String[] stringList = new String[(int) positionOfInitalizer.getY()];
-        int x = 0, y = 0;
-        while (y < (int) positionOfInitalizer.getY()) {
-
-            String string = "";
-            while (x < (int) positionOfInitalizer.getX()) {
-                string += get(x, y).toString();
-                x++;
-            }
-            stringList[y] = string;
-            x = 0;
-            y++;
-        }
-
-
-        return stringList;
-    }
-
-    public void printString() {
-      /*  String[] stringList = getStringList();
-        for (String string : stringList) {
-            System.out.println(string);
-        }*/
-
-        String[] stringList = new String[(int) positionOfInitalizer.getY()];
-        int x = 0, y = 0;
-        while (y < (int) positionOfInitalizer.getY()) {
-
-            String string = "";
-            while (x < (int) positionOfInitalizer.getX()) {
-                if (visitedList.contains(new SVector3d((double) x, (double) y))) {
-                    string += "X";
-                } else {
-                    string += get(x, y).toString();
-                }
-                x++;
-            }
-            System.out.println(string);
-            stringList[y] = string;
-            x = 0;
-            y++;
-
-
-        }
-    }
-
-    public World worldCopy(ArrayList<SVector3d> visitedList) {
-        World world = new World(getStringList());
-        world.setVisitedList((ArrayList<SVector3d>) visitedList.clone());
-        return world;
     }
 }
