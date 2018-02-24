@@ -247,12 +247,4 @@ public class World implements Cloneable {
             return null;
         }
     }
-
-    public ArrayList<SVector3d> getVisitedList() {
-        return visitedList;
-    }
-
-    public void setVisitedList(ArrayList<SVector3d> visitedList) {
-        this.visitedList = visitedList;
-    }
 }
