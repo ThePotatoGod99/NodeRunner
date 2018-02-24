@@ -1,0 +1,7 @@
+package hola;
+
+public class WorldObject {
+
+    private SVector3d position = new SVector3d();
+
+}

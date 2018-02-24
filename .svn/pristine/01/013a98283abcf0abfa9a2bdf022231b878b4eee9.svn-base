@@ -1,0 +1,43 @@
+package hola;
+
+import java.util.ArrayList;
+
+public class World {
+    private ArrayList<WorldObject> objectList = new ArrayList<>();
+    private RunnerObject runnerObject = new RunnerObject();
+
+    private int y = 0;
+    public World(){
+
+
+    }
+
+    public void addLine(String line){
+        int x = 0;
+        for(char character : line.toCharArray()){
+            switch (character) {
+                case ' ':
+                    break;
+                case '@':
+                    break;
+                case '#':
+                    break;
+                case '-':
+                    break;
+                case 'H':
+                    break;
+                case '$':
+                    break;
+                case '&':
+                    break;
+                case 'S':
+                    runnerObject = new RunnerObject(new SVector3d(x, y));
+                    objectList.add(runnerObject);
+                    break;
+            }
+            x++;
+        }
+        y++;
+
+    }
+}

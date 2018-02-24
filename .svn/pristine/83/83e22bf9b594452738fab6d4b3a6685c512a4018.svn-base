@@ -1,0 +1,20 @@
+package hola;
+
+public class WorldObject {
+
+    private SVector3d position = new SVector3d();
+    private TypeObjet type;
+    
+    public WorldObject (TypeObjet type, SVector3d position) {
+    	this.type = type;
+    	this.position = position;
+    }
+    
+    public SVector3d getPosition(){
+    	return position;
+    }
+    
+    public TypeObjet getType() {
+    	return type;
+    }
+}

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="5d1661a7-843c-4c66-b6af-2baeb49e10bd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$" afterPath="$PROJECT_DIR$" />
+      <change beforePath="$PROJECT_DIR$/src/noderunnerkeyboard/NodeRunnerKeyboard.java" afterPath="$PROJECT_DIR$/src/noderunnerkeyboard/NodeRunnerKeyboard.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +18,18 @@
       <file leaf-file-name="NodeRunnerKeyboard.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/noderunnerkeyboard/NodeRunnerKeyboard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+            <state relative-caret-position="255">
+              <caret line="21" column="8" lean-forward="false" selection-start-line="21" selection-start-column="8" selection-end-line="77" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TCPClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/noderunnerkeyboard/TCPClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="24" column="52" lean-forward="false" selection-start-line="24" selection-start-column="52" selection-end-line="24" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -239,7 +250,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-2" y="-18" width="1924" height="1081" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Key Promoter X" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -278,10 +288,18 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/noderunnerkeyboard/TCPClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="24" column="52" lean-forward="false" selection-start-line="24" selection-start-column="52" selection-end-line="24" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/noderunnerkeyboard/NodeRunnerKeyboard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+        <state relative-caret-position="255">
+          <caret line="21" column="8" lean-forward="false" selection-start-line="21" selection-start-column="8" selection-end-line="77" selection-end-column="11" />
           <folding />
         </state>
       </provider>

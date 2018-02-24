@@ -1,0 +1,51 @@
+package main.java.ca.umontreal.iro.hackathon.loderunner;
+
+import hola.SVector3d;
+import hola.World;
+
+/**
+ *
+ */
+public class Runner extends BasicRunner {
+
+    // TODO : Remplacer ceci par votre clé secrète
+    public static final String ROOM = "xdsimon";
+
+    /* Utilisez cette variable pour choisir le niveau de départ
+     *
+     * Notez: le niveau de départ sera 1 pour tout
+     * le monde pendant la compétition :v)
+     */
+    public static final int START_LEVEL = 1;
+
+    public Runner() {
+        super(ROOM, START_LEVEL);
+    }
+
+    private World world = new World();
+
+    @Override
+    public void start(String[] grid) {
+        System.out.println("Nouveau niveau ! Grille initiale reçue :");
+
+
+        for (int i = 0; i < grid.length; i++) {
+            String ligne = grid[i];
+
+            world.addLine(ligne);
+            System.out.println(ligne);
+        }
+    }
+
+    @Override
+    public Move next(int x, int y) {
+        System.out.println("Position du runner : (" + x + ", " + y + ")");
+        world.setRunnerPosition(new SVector3d(x, y));
+
+        int direction = (int) (Math.random() * 4 + 1);
+
+        Direction dir = Direction.fromInt(direction);
+
+        return new Move(Event.MOVE, dir);
+    }
+}

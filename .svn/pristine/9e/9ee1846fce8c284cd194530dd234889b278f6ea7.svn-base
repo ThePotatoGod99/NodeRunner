@@ -1,0 +1,110 @@
+package hola;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+public class World {
+    private ArrayList<WorldObject> objectList = new ArrayList<>();
+
+    private ArrayList<ArrayList<WorldObject>> worldMap = new ArrayList<>();
+
+    private RunnerObject runnerObject = new RunnerObject();
+
+    private SVector3d positionOfInitalizer = new SVector3d();
+
+
+    private String[] grid;
+    public World(String[] grid){
+        this.grid = grid;
+
+        for(int i = 0; i  < grid[0].length() ; i ++ ){
+
+            worldMap.add(new ArrayList<WorldObject>());
+        }
+        for (int i = 0; i < grid.length; i++) {
+            String ligne = grid[i];
+            this.addLine(ligne);
+        }
+    }
+
+
+    public void setRunnerPosition(SVector3d position){
+        int x = (int) position.getX(), y = (int) position.getY();
+
+        /* Remplace ancienne positiondu runner */
+        worldMap.get(runnerObject.getX()).set(runnerObject.getY(), new WorldObject(runnerObject.getPosition()));
+
+        runnerObject.setPosition(position);
+
+
+        System.out.println(runnerObject.getPosition());
+        //Set runner a sa nouvelle pos
+        worldMap.get(x).set(y, runnerObject);
+    }
+
+
+
+    public void addLine(String line){
+        positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
+
+        for(char character : line.toCharArray()){
+            int x = (int) positionOfInitalizer.getX(), y = (int) positionOfInitalizer.getY();
+            WorldObject object = new WorldObject();
+            switch (character) {
+                case ' ':
+                    break;
+                case '@':
+                    object = new WorldObject(TypeObjet.BLOC_PIERRE, positionOfInitalizer);
+                    break;
+                case '#':
+                    object = new WorldObject(TypeObjet.BLOC_BRIQUE, positionOfInitalizer);
+                    break;
+                case '-':
+                    object = new WorldObject(TypeObjet.CORDE, positionOfInitalizer);
+                    break;
+                case 'H':
+                    object = new WorldObject(TypeObjet.ECHELLE, positionOfInitalizer);
+                    break;
+                case '$':
+                    object = new WorldObject(TypeObjet.FRIC, positionOfInitalizer);
+                    break;
+                case '&':
+                    runnerObject = new RunnerObject(positionOfInitalizer);
+                    object = runnerObject;
+                    break;
+                case 'S':
+                    object = new WorldObject(TypeObjet.SORTIE, positionOfInitalizer);
+                    break;
+            }
+            if (!object.equals(new WorldObject())) {
+                objectList.add(object);
+            } else {
+                object = new WorldObject(positionOfInitalizer);
+            }
+
+            worldMap.get(x).add(y, object);
+            positionOfInitalizer = positionOfInitalizer.add(new SVector3d(1.0, 0));
+        }
+        positionOfInitalizer = positionOfInitalizer.add(new SVector3d(0,1.0));
+
+    }
+
+    public void print(){
+//        System.out.println(toString());
+        System.out.println(worldMap.get(0).get(6).getType());
+        SVector3d xd = runnerObject.getPosition();
+        System.out.println(objectList.indexOf(runnerObject) + " : " +objectList.get(objectList.indexOf(runnerObject) ).getPosition() + " : " + xd);
+        System.out.println(worldMap.get((int)xd.getX()).get((int)xd.getY()).getType());
+    }
+
+    @Override
+    public String toString() {
+
+        String xd = "";
+        for(String string : grid){
+            xd = xd + string + "\n";
+        }
+        return xd;
+
+    }
+}

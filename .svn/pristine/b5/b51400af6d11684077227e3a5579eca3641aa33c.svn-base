@@ -1,0 +1,15 @@
+package hola;
+
+import java.util.ArrayList;
+
+public class World {
+    private ArrayList<WorldObject> objectList = new ArrayList<>();
+
+    public World(String initial){
+
+    }
+
+    public void addLine(String line){
+
+    }
+}

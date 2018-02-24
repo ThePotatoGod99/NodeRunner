@@ -1,0 +1,56 @@
+package hola;
+
+import java.util.ArrayList;
+
+public class World {
+    private ArrayList<WorldObject> objectList = new ArrayList<>();
+    private RunnerObject runnerObject = new RunnerObject();
+
+    private SVector3d positionOfInitalizer = new SVector3d();
+    public World(){
+
+
+    }
+
+
+    public void setRunnerPosition(SVector3d position){
+        runnerObject.setPosition(position);
+    }
+
+
+
+    public void addLine(String line){
+        positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
+        for(char character : line.toCharArray()){
+            switch (character) {
+                case ' ':
+                    break;
+                case '@':
+                    objectList.add(new WorldObject(TypeObjet.BLOC_PIERRE, positionOfInitalizer));
+                    break;
+                case '#':
+                    objectList.add(new WorldObject(TypeObjet.BLOC_BRIQUE, positionOfInitalizer));
+                    break;
+                case '-':
+                    objectList.add(new WorldObject(TypeObjet.CORDE, positionOfInitalizer));
+                    break;
+                case 'H':
+                    objectList.add(new WorldObject(TypeObjet.ECHELLE, positionOfInitalizer));
+                    break;
+                case '$':
+                    objectList.add(new WorldObject(TypeObjet.FRIC, positionOfInitalizer));
+                    break;
+                case '&':
+                    runnerObject = new RunnerObject(positionOfInitalizer);
+                    objectList.add(runnerObject);
+                    break;
+                case 'S':
+                    objectList.add(new WorldObject(TypeObjet.SORTIE, positionOfInitalizer));
+                    break;
+            }
+            positionOfInitalizer.add(new SVector3d(1, 0));
+        }
+        positionOfInitalizer.add(new SVector3d(0,1));
+
+    }
+}

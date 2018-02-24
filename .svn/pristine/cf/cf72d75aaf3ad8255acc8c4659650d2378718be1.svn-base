@@ -1,0 +1,35 @@
+package hola;
+
+import java.util.ArrayList;
+
+public class World {
+    private ArrayList<WorldObject> objectList = new ArrayList<>();
+
+    public World(String initial){
+        for(char character : initial.toCharArray()){
+            switch (character) {
+                case ' ':
+                    break;
+                case '@':
+                    break;
+                case '#':
+                    break;
+                case '-':
+                    break;
+                case 'H':
+                    break;
+                case '$':
+                    break;
+                case '&':
+                    break;
+                case 'S':
+                    break;
+            }
+        }
+
+    }
+
+    public void addLine(String line){
+
+    }
+}
