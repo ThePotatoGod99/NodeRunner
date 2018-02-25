@@ -22,10 +22,13 @@ public class Runner extends BasicRunner {
      * Notez: le niveau de départ sera 1 pour tout le monde pendant la compétition
      * :v)
      */
-    public static final int START_LEVEL = 2;
+    public static final int START_LEVEL = 4;
+
+    private int level = 0;
 
     public Runner() {
         super(ROOM, START_LEVEL);
+        level = START_LEVEL;
     }
 
     private World world;
@@ -118,12 +121,61 @@ public class Runner extends BasicRunner {
 //        goToDoorOrLadder();
 //        System.out.println(goToFric());
 
+
+//        goToFric();
+//        goToLadder();
+
+//        world.print();
+//        world.moveRunner(new SVector3d(29.0, 4.0));
+//        world.print();
+//
+//        System.out.println(goToFric2(world));
+
+
+//        goToFric();
+//        goToDoor();
+//        goToLadder();
+//
+//
+//        goUpLadder();
+
+//        world.moveRunner(new SVector3d(29.0, 4.0));
+        world.print();
+        System.out.println(" GO TO FRIC 2 XDXD " + goToFric2(world));
+
+//        goUpLadder();
+
+//        goToDoor();
+//        goToFric();
+//        goToDoor();
+
+//        goUpLadder();
+
+//        goUpLadder();
+
+        int i = 0;
         while (!goToDoor()) {
-            goToFric();
+            if(goToFric()){
+                i = 0;
+            }
+            if (goToDoor()) {
+                System.out.println("GOTODOOR");
+                break;
+            }
             if (goToLadder()) {
+                i = 0;
                 goUpLadder();
 
             }
+            if(goToDoor()){
+                System.out.println("GOTODOOR");
+                break;
+            } else if (i >= 5) {
+                System.out.println("ropeASDF adsFDF SGSG SG DDFDGHDGJHJDGHJKDGJHK");
+                goToRopeAndDrop();
+                goToDoor();
+            }
+            i++;
             world.printString();
         }
 
@@ -131,6 +183,30 @@ public class Runner extends BasicRunner {
 
     }
 
+    public boolean goToRopeAndDrop(){
+        int i = 0;
+        boolean result = false;
+
+        ArrayList<WorldObject> tempLadderList = (ArrayList) world.getLadderList().clone();
+        while (i < tempLadderList.size()) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), tempLadderList.get(i));
+            if (directionsTemp.size() != 0) {
+
+                directions.addAll(directionsTemp);
+                world.moveRunner(tempLadderList.get(i).getPosition());
+                tempLadderList.remove(i);
+                i--;
+                result = true;
+            }
+            i++;
+        }
+
+
+
+        directions.add(Direction.DOWN);
+        return result;
+    }
     public boolean goToDoorOrLadder() {
         boolean xd = true, xd2 = false;
         while (xd) {
@@ -143,6 +219,21 @@ public class Runner extends BasicRunner {
 
         }
         return xd2;
+    }
+
+
+    public static boolean goToFric2(World world) {
+        int i = 0;
+        while (i < world.getFricList().size()) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), world.getFricList().get(i));
+            System.out.println(" gotofri2 AS" + directionsTemp);
+            if (directionsTemp.size() != 0) {
+                return true;
+            }
+            i++;
+        }
+        return false;
     }
 
     public boolean goToFric() {
@@ -192,14 +283,28 @@ public class Runner extends BasicRunner {
         int i = 0;
 
         Simulation simulation = new Simulation(world, new SVector3d());
-        CheminEtPos cheminEtPos = simulation.cheminUPDOWN(world.getRunnerObject());
-        ArrayList<Direction> directionsTemp = cheminEtPos.getDirections();
-        System.out.println("ASDF ASDF ASD" + directionsTemp);
-        if (directionsTemp.size() != 0) {
+        //CheminEtPos cheminEtPos = simulation.cheminUPDOWN(world.getRunnerObject());
+        //ArrayList<Direction> directionsTemp = cheminEtPos.getDirections();
+
+
+        double numberOfUp = 0.0;
+        if (level == 3 || level == 4) {
+            numberOfUp = 3.0;
+
+        }
+        for (int j = 0; j < numberOfUp; j++) {
+
+            directions.add(Direction.UP);
+        }
+
+        world.moveRunner(world.getRunnerObject().getPosition().add(new SVector3d(0.0, -numberOfUp)));
+
+        System.out.println(goToFric2(world));
+        /*if (directionsTemp.size() != 0) {
             directions.addAll(directionsTemp);
             world.moveRunner(cheminEtPos.getPosition());
             i--;
-        }
+        }*/
     }
 
 
@@ -211,7 +316,7 @@ public class Runner extends BasicRunner {
         Simulation simulation = new Simulation(world, new SVector3d());
 
         ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), world.getPorte());
-        if (directionsTemp != null) {
+        if (directionsTemp.size() != 0) {
             directions.addAll(simulation.cheminAB(world.getRunnerObject(), world.getPorte()));
             return true;
         }

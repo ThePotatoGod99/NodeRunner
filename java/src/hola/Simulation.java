@@ -1,6 +1,8 @@
 package hola;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
+import main.java.ca.umontreal.iro.hackathon.loderunner.Runner;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -68,8 +70,10 @@ public class Simulation {
                     break;
             }
             for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
-                if(onSameHeightAsFricDoor(iterator)){
+                boolean xd = Runner.goToFric2(world);
+                System.out.println(" ADSFA DF SGGFFF  " + iterator + " : " + xd + " : " + world.getFricList().get(0).getPosition() + " : " + temp);
 
+                if (xd) {
                     world.moveRunner(iterator);
                     chemin.addAll(temp);
                     return new CheminEtPos(chemin, iterator);
@@ -117,6 +121,7 @@ public class Simulation {
                     break;
             }
             for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
+                System.out.println(" ADFDSF A ADADADF AD D" + iterator + objetArrive.getPosition());
                 if(iterator.equals(objetArrive.getPosition())) {
                     chemin.addAll(temp);
                     return chemin;

@@ -13,6 +13,7 @@ public class World implements Cloneable {
     private WorldObject porte = new WorldObject();
     private ArrayList<WorldObject> fricList = new ArrayList<>();
     private ArrayList<WorldObject> ladderList = new ArrayList<>();
+    private ArrayList<WorldObject> ropeList = new ArrayList<>();
     private Cheminement cheminement;
 
     private SVector3d positionOfInitalizer = new SVector3d();
@@ -61,6 +62,7 @@ public class World implements Cloneable {
                     break;
                 case '-':
                     object = new WorldObject(TypeObjet.CORDE, positionOfInitalizer);
+                    ropeList.add(object);
                     break;
                 case 'H':
                     object = new WorldObject(TypeObjet.ECHELLE, positionOfInitalizer);
@@ -235,6 +237,10 @@ public class World implements Cloneable {
 
     public ArrayList<WorldObject> getLadderList() {
         return ladderList;
+    }
+
+    public ArrayList<WorldObject> getRopeList() {
+        return ropeList;
     }
 
     public WorldObject getPorte() {
