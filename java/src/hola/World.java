@@ -17,6 +17,7 @@ public class World implements Cloneable {
 
 
 
+	private SVector3d actualRunPos = new SVector3d();
 	private Cheminement cheminement;
 
 	private SVector3d positionOfInitalizer = new SVector3d();
@@ -382,6 +383,14 @@ public class World implements Cloneable {
 			y++;
 
 		}
+	}
+
+	public void setActualRunPos(SVector3d actualRunPos) {
+		this.actualRunPos = actualRunPos;
+	}
+
+	public SVector3d getActualRunPos() {
+		return actualRunPos;
 	}
 
 	public World worldCopy(ArrayList<SVector3d> visitedList) {

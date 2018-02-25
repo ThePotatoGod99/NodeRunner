@@ -1,6 +1,7 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
 import hola.Cheminement;
+import hola.SVector3d;
 import hola.Simulation;
 import hola.World;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
 	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "andylecool";
+	public static final String ROOM = "andylecool1";
 
 	/*
 	 * Utilisez cette variable pour choisir le niveau de départ
@@ -45,6 +46,7 @@ public class Runner extends BasicRunner {
 		}
 		Cheminement cheminement = world.getCheminement();
         directions = cheminement.path();
+
 		JFrame frame = new JFrame("Node Runner");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -98,10 +100,13 @@ public class Runner extends BasicRunner {
 			}
 		});
 
+		System.out.println(" DirectIONS FINALES " + directions );
+
 	}
 
     @Override
     public Move next(int x, int y) {
+		world.setActualRunPos(new SVector3d((double)x, (double)y));
     //    System.out.println("Position du runner : (" + x + ", " + y + ")");
 //        world.print();
         // world.move(direction);
@@ -119,6 +124,7 @@ public class Runner extends BasicRunner {
 //        else{
 
             dir = executerNext(directions);
+		System.out.println(dir + " : " + directions);
 //        }
 		// Direction dir = direction;
 
@@ -126,9 +132,14 @@ public class Runner extends BasicRunner {
         return new Move(Event.MOVE, dir);
     }
     public Direction executerNext(ArrayList<Direction> directions ) {
-    	if(directions.isEmpty()==false) {
+    	if(directions == null || directions.isEmpty()==false) {
     		return directions.remove(0);
     	}
+    	world.moveRunner(world.getActualRunPos());
+		world.printString();
+		Cheminement cheminement = world.getCheminement();
+		this.directions = cheminement.path2();
+		System.out.println("FINISHED " + this.directions);
     	return Direction.NONE;
     }
 

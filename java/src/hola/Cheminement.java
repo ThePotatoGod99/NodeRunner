@@ -184,7 +184,8 @@ public class Cheminement {
 
     public boolean isOnLadder(SVector3d position){
         for(WorldObject ladder : world.getLadderList()){
-            if(ladder.getPosition() == position){
+            System.out.println(ladder.getPosition() + " LADDER" + position + ladder.getPosition().equals(position));
+            if(ladder.getPosition().equals(position)){
                 return true;
             }
         }
@@ -205,24 +206,21 @@ public class Cheminement {
 
 //		finale.addAll(cheminAB(world.getRunnerObject(),world.getPorte()));
 
-        System.out.println(world.get(world.getRunnerObject().getPosition()).getType() + " PPP " + world.getRunnerObject().getPosition());
-        System.out.println("PPP" + isOnLadder(world.getRunnerObject().getPosition()));
-
-        if(isOnLadder(world.getRunnerObject().getPosition())){ //world.get(world.getRunnerObject().getPosition()).getType().equals(TypeObjet.ECHELLE)){
-
-            finale.addAll(goUpLadder());
-        }
-        ArrayList<Direction> ropeList = goToRope();
-
-        finale.addAll(goToRope());
-
 		finale.addAll(cheminAB(world.getRunnerObject(),world.getPorte()));
-		finale.addAll(goUpLadder());
-        finale.addAll(cheminAB(world.getRunnerObject(),world.getPorte()));
+
+
 
 
         return finale;
 
+    }
+
+    public ArrayList<Direction> path2() {
+
+        System.out.println(isOnLadder(world.getRunnerObject().getPosition()) + " : " + world.getRunnerObject().getPosition());
+
+
+        return null;
     }
 
     public void isOnOtherFric(SVector3d position) {
