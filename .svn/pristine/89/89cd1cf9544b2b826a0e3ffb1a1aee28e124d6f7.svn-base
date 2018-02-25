@@ -110,9 +110,7 @@ public class Cheminement {
 						}
 					}
 					
-				}
-
-				/*else if(iteratorX.getY()< objetArrive.getY() && world.get(iteratorX).getType()==TypeObjet.CORDE&&(world.get(iteratorX.add(descendre)).getType()!=TypeObjet.BLOC_BRIQUE&&world.get(iteratorX.add(descendre)).getType()!=TypeObjet.BLOC_PIERRE)){
+				} else if(iteratorX.getY()< objetArrive.getY() && world.get(iteratorX).getType()==TypeObjet.CORDE&&(world.get(iteratorX.add(descendre)).getType()!=TypeObjet.BLOC_BRIQUE&&world.get(iteratorX.add(descendre)).getType()!=TypeObjet.BLOC_PIERRE)){
 					iteratorY = iteratorX;
 					sens = descendre;
 					direction = Direction.DOWN;
@@ -124,7 +122,7 @@ public class Cheminement {
 					direction = Direction.RIGHT;
 					sens = avance;
 					iteratorX = iteratorY;
-				}*/
+				}
 				
 				
 				else {
