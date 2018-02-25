@@ -336,6 +336,10 @@ public class XdSimulation {
 //        return true;
     }
 
+    public ArrayList<Direction> goDropGauche(Simulation sim) {
+        ArrayList<Direction> direction1 = sim.goDropGauche(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
     public ArrayList<Direction> goDownOne(Simulation sim) {
         ArrayList<Direction> direction1 = sim.goDownOne(this.getGrid(), this.getWorld().getRunnerObject());
         return direction1;

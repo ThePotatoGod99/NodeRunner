@@ -210,7 +210,22 @@ public class Simulation {
         return directionList;
     }
 
-    public 
+    /*public ArrayList<Direction> goDropGauche(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+    }*/
+
+    public ArrayList<Direction> goDropGauche(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+
+        directionList.add(Direction.LEFT);
+        directionList.add(Direction.DOWN);
+        return directionList;
+    }
+
     public ArrayList<Direction> goDownLadder(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
         world.initPlayer(runnerObject.getPosition());
