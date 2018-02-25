@@ -55,7 +55,7 @@ public class Runner extends BasicRunner {
 		frame.setLocationRelativeTo(null);
 		frame.pack();
 
-		frame.setVisible(true);
+//		frame.setVisible(true);
 	
 		// Simulation simulation = new Simulation(world, world.getFricList().get(0));
 		// System.out.println(simulation.simulate());
@@ -113,13 +113,13 @@ public class Runner extends BasicRunner {
         
 //        Direction dir = direction;
     	Direction dir;
-        if(direction != Direction.NONE){
-            dir = direction;
-        }
-        else{
+//        if(direction != Direction.NONE){
+//            dir = direction;
+//        }
+//        else{
 
             dir = executerNext(directions);
-        }
+//        }
 		// Direction dir = direction;
 
 //        System.out.println("\n\n\n");
