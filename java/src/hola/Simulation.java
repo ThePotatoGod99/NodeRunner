@@ -162,7 +162,26 @@ public class Simulation {
 
     }
 
+    public ArrayList<Direction> goDownLadder(String[] grid, RunnerObject runnerObject) {
+        return null;
+       /* World world = new World(grid, runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+        SVector3d pos = runnerObject.getPosition();
+        if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE) {
 
+            while (world.canMove(Direction.UP)) {
+                System.out.println(world.getActualRunPos() );
+                pos = pos.add(World.directionToVector(Direction.UP));
+                world.initPlayer(pos);
+                directionList.add(Direction.UP);
+                if(goToFric2(world.getStringList(), world.getRunnerObject())){
+                    return directionList;
+                }
+            }
+        }
+        return directionList;*/
+
+    }
     public static ArrayList<Direction>  goToDoor(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
 

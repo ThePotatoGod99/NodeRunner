@@ -2,6 +2,7 @@ package hola;
 
 import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class XdSimulation {
@@ -43,7 +44,7 @@ public class XdSimulation {
         }
 
 
-        return world.get(runnerPos).getType() == TypeObjet.SORTIE;
+        return world.get(runnerPos).getType() == TypeObjet.SORTIE && world.getFricList().isEmpty();
     }
 
 
@@ -55,14 +56,22 @@ public class XdSimulation {
 
     public static void main(String[] args) {
 
-        String[] grid = {"         ",
+        String[] grid = {
+                "          ",
+                " $  H  $  ",
+                " ###H###  ",
+                "    H     ",
+                "$& $H  S  ",
+                "@@@@@@@@@@"
+        };
+       /* String[] grid = {"         ",
                 "         ",
                 "S $  H   ",
                 "#####H   ",
                 "     H   ",
                 "& $  H $ ",
                 "@@@@@@@@@",
-        };
+        };*/
         XdSimulation xdSimulation = new XdSimulation(grid);
         World world2 = new World(xdSimulation.getWorld().getStringList());
 //        Cheminement cheminement = new Cheminement(world2, world2.getRunnerObject(),world2.getPorte() );
@@ -72,14 +81,26 @@ public class XdSimulation {
 
         Simulation sim = new Simulation(grid);
 
-        ArrayList<Direction> direction1 = sim.goToFric(xdSimulation.getGrid(), xdSimulation.getWorld().getRunnerObject());
-
-        xdSimulation.simulate(direction1);
 
 //        SVector3d playerPos = xdSimulation.getRunnerObject().getPosition();
 //        xdSimulation = new XdSimulation(xdSimulation.getGrid());
 //        xdSimulation.getWorld().initPlayer(playerPos);
 
+
+        while(!xdSimulation.simulate(xdSimulation.goToDoor(sim))){
+            xdSimulation.simulate(xdSimulation.goToFric(sim));
+            if(xdSimulation.simulate(xdSimulation.goToDoor(sim))){
+                break;
+            }
+            xdSimulation.simulate(xdSimulation.goToLadder(sim));
+            xdSimulation.simulate(xdSimulation.goUpLadder(sim));
+        }
+
+//        xdSimulation.simulate(xdSimulation.goToLadder(sim));
+//        xdSimulation.simulate(xdSimulation.goUpLadder(sim));
+//        xdSimulation.simulate(xdSimulation.goToFric(sim));
+//        xdSimulation.simulate(xdSimulation.goToDoor(sim));
+        /*
         ArrayList<Direction> dir = sim.goToLadder(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
 
         xdSimulation.simulate(dir);
@@ -92,9 +113,26 @@ public class XdSimulation {
         xdSimulation.simulate(dir3);
 
         ArrayList<Direction> dir4 = sim.goToDoor(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
-        xdSimulation.simulate(dir4);
+        xdSimulation.simulate(dir4);*/
     }
 
+    public ArrayList<Direction> goToFric(Simulation sim){
+        ArrayList<Direction> direction1 = sim.goToFric(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
+
+    public ArrayList<Direction> goToDoor(Simulation sim){
+        ArrayList<Direction> direction1 = sim.goToDoor(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
+    public ArrayList<Direction> goToLadder(Simulation sim){
+        ArrayList<Direction> direction1 = sim.goToLadder(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
+    public ArrayList<Direction> goUpLadder(Simulation sim){
+        ArrayList<Direction> direction1 = sim.goUpLadder(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
 
     public void reset(){
 
