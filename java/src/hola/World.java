@@ -1,401 +1,469 @@
 package hola;
 
 import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
+import org.omg.PortableInterceptor.DISCARDING;
 
 import java.util.ArrayList;
 
 public class World implements Cloneable {
-	// private ArrayList<WorldObject> objectList = new ArrayList<>();
+    // private ArrayList<WorldObject> objectList = new ArrayList<>();
 
-	private ArrayList<ArrayList<WorldObject>> worldMap = new ArrayList<>();
+    private ArrayList<ArrayList<WorldObject>> worldMap = new ArrayList<>();
 
-	private RunnerObject runnerObject = new RunnerObject();
-	private WorldObject porte = new WorldObject();
-	private ArrayList<WorldObject> fricList = new ArrayList<>();
-	private ArrayList<WorldObject> ropeList = new ArrayList<>();
-	private ArrayList<WorldObject> ladderList = new ArrayList<>();
+    private RunnerObject runnerObject = new RunnerObject();
+    private WorldObject porte = new WorldObject();
+    private ArrayList<WorldObject> fricList = new ArrayList<>();
+    private ArrayList<WorldObject> ropeList = new ArrayList<>();
+    private ArrayList<WorldObject> ladderList = new ArrayList<>();
 
 
+    private SVector3d actualRunPos = new SVector3d();
+    private Cheminement cheminement;
 
-	private SVector3d actualRunPos = new SVector3d();
-	private Cheminement cheminement;
+    private SVector3d positionOfInitalizer = new SVector3d();
 
-	private SVector3d positionOfInitalizer = new SVector3d();
+    public boolean dontComeBack = false;
+    private String[] grid;
 
-	public boolean dontComeBack = false;
-	private String[] grid;
+    private ArrayList<SVector3d> visitedList = new ArrayList<SVector3d>();
 
-	private ArrayList<SVector3d> visitedList = new ArrayList<SVector3d>();
+    public World(String[] grid) {
+        this.grid = grid;
 
-	public World(String[] grid) {
-		this.grid = grid;
+        for (int i = 0; i < grid[0].length(); i++) {
 
-		for (int i = 0; i < grid[0].length(); i++) {
-
-			worldMap.add(new ArrayList<WorldObject>());
-		}
-		for (int i = 0; i < grid.length; i++) {
-			String ligne = grid[i];
-			this.addLine(ligne);
-		}
-		cheminement = new Cheminement(this, this.getRunnerObject(), this.getPorte());
-	}
-
-	public World(String[] grid, boolean dontComeBack) {
-		this(grid);
-		this.dontComeBack = dontComeBack;
-	}
-
-	public void addLine(String line) {
-		positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
-
-		for (char character : line.toCharArray()) {
-			int x = (int) positionOfInitalizer.getX(), y = (int) positionOfInitalizer.getY();
-			WorldObject object = new WorldObject();
-			switch (character) {
-			case ' ':
-				break;
-			case '@':
-				object = new WorldObject(TypeObjet.BLOC_PIERRE, positionOfInitalizer);
-				break;
-			case '#':
-				object = new WorldObject(TypeObjet.BLOC_BRIQUE, positionOfInitalizer);
-				break;
-			case '-':
-				object = new WorldObject(TypeObjet.CORDE, positionOfInitalizer);
-				ropeList.add(object);
-				break;
-			case 'H':
-				object = new WorldObject(TypeObjet.ECHELLE, positionOfInitalizer);
-				ladderList.add(object);
-				break;
-			case '$':
-				object = new WorldObject(TypeObjet.FRIC, positionOfInitalizer);
-				fricList.add(object);
-				break;
-			case '&':
-				runnerObject = new RunnerObject(positionOfInitalizer);
-				object = runnerObject;
-				break;
-			case 'S':
-				object = new WorldObject(TypeObjet.SORTIE, positionOfInitalizer);
-				porte = object;
-				break;
-			}
-			if (!object.equals(new WorldObject())) {
-				// objectList.add(object);
-			} else {
-				object = new WorldObject(positionOfInitalizer);
-			}
-
-			worldMap.get(x).add(y, object);
-			positionOfInitalizer = positionOfInitalizer.add(new SVector3d(1.0, 0));
-		}
-		positionOfInitalizer = positionOfInitalizer.add(new SVector3d(0, 1.0));
-
-	}
-
-	public void print() {
-		System.out.println(toString());
-	}
-
-	@Override
-	public String toString() {
-
-		int x = 0, y = 0;
-		String result = "";
-		while (y < (int) positionOfInitalizer.getY()) {
-
-			while (x < (int) positionOfInitalizer.getX()) {
-				result += "[" + get(x, y).toString() + "]";
-				x++;
-			}
-			x = 0;
-			y++;
-			System.out.print("\n");
-			result += "\n";
-		}
-		return result;
-	}
-
-	public boolean isVisited(SVector3d position) {
-		return visitedList.contains(position);
-	}
-
-	public boolean spaceIsAvailable(SVector3d position) {
-		WorldObject objectAtPos = this.get(position);
-		TypeObjet type = objectAtPos.getType();
-		switch (type) {
-		case VISITED:
-			break;
-		case ESPACE:
-			break;
-		case CORDE:
-			break;
-		case FRIC:
-			break;
-		case SORTIE:
-			break;
-		case ECHELLE:
-			break;
-		default:
-			return false;
-		}
-		return true;
-
-	}
-
-	   public void moveRunner(SVector3d destination) {
-        SVector3d oldPos = runnerObject.getPosition();
-        change(oldPos, new WorldObject());
-        runnerObject.setPosition(destination);
-        change(destination, runnerObject);
+            worldMap.add(new ArrayList<WorldObject>());
+        }
+        for (int i = 0; i < grid.length; i++) {
+            String ligne = grid[i];
+            this.addLine(ligne);
+        }
+        cheminement = new Cheminement(this, this.getRunnerObject(), this.getPorte());
+    }
+    public World(String[] grid, SVector3d pos){
+        this(grid);
+        this.initPlayer(pos);
     }
 
-	public boolean move(Direction direction) {
-		SVector3d positionToAdd = new SVector3d();
-		switch (direction) {
-		case UP:
-			positionToAdd = new SVector3d(0.0, -1.0);
-			break;
-		case DOWN:
-			positionToAdd = new SVector3d(0.0, 1.0);
-			break;
-		case LEFT:
-			positionToAdd = new SVector3d(-1.0, 0.0);
-			break;
-		case NONE:
-			return true;
-		case RIGHT:
-			positionToAdd = new SVector3d(1.0, 0.0);
-			break;
-		}
-		SVector3d oldPos = runnerObject.getPosition();
-		SVector3d newPos = runnerObject.getPosition().add(positionToAdd);
+    public World(String[] grid, boolean dontComeBack) {
+        this(grid);
+        this.dontComeBack = dontComeBack;
+    }
 
-		if (!isInBounds(newPos)) {
-			return false;
-		}
 
-		WorldObject objectAtOld = this.get(oldPos);
-		WorldObject objectAtPos = this.get(newPos);
+    public void initPlayer(SVector3d pos){
+        runnerObject = new RunnerObject(pos);
+        setActualRunPos(pos);
+    }
 
-		if (direction.equals(Direction.UP) && !objectAtOld.getType().equals(TypeObjet.ECHELLE)) {
-			return false;
-		}
-		if (direction.equals(Direction.DOWN) && !objectAtOld.getType().equals(TypeObjet.ECHELLE)
-				&& !objectAtOld.getType().equals(TypeObjet.CORDE)) {
-			return false;
-		}
+    public void addLine(String line) {
+        positionOfInitalizer = new SVector3d(0.0, positionOfInitalizer.getY());
 
-		if (spaceIsAvailable(newPos) && !(dontComeBack && isVisited(newPos))) {
+        for (char character : line.toCharArray()) {
+            int x = (int) positionOfInitalizer.getX(), y = (int) positionOfInitalizer.getY();
+            WorldObject object = new WorldObject();
+            switch (character) {
+                case ' ':
+                    break;
+                case '@':
+                    object = new WorldObject(TypeObjet.BLOC_PIERRE, positionOfInitalizer);
+                    break;
+                case '#':
+                    object = new WorldObject(TypeObjet.BLOC_BRIQUE, positionOfInitalizer);
+                    break;
+                case '-':
+                    object = new WorldObject(TypeObjet.CORDE, positionOfInitalizer);
+                    ropeList.add(object);
+                    break;
+                case 'H':
+                    object = new WorldObject(TypeObjet.ECHELLE, positionOfInitalizer);
+                    ladderList.add(object);
+                    break;
+                case '$':
+                    object = new WorldObject(TypeObjet.FRIC, positionOfInitalizer);
+                    fricList.add(object);
+                    break;
+                case '&':
+                    runnerObject = new RunnerObject(positionOfInitalizer);
+                    setActualRunPos(positionOfInitalizer);
+//				object = runnerObject;
+                    break;
+                case 'S':
+                    object = new WorldObject(TypeObjet.SORTIE, positionOfInitalizer);
+                    porte = object;
+                    break;
+            }
+            if (!object.equals(new WorldObject())) {
+                // objectList.add(object);
+            } else {
+                object = new WorldObject(positionOfInitalizer);
+            }
 
-			if (objectAtPos.getType().equals(TypeObjet.ESPACE)) {
+            worldMap.get(x).add(y, object);
+            positionOfInitalizer = positionOfInitalizer.add(new SVector3d(1.0, 0));
+        }
+        positionOfInitalizer = positionOfInitalizer.add(new SVector3d(0, 1.0));
 
-				change(newPos, runnerObject);
+    }
 
-			} else {
+    public void print() {
+        System.out.println(toString());
+    }
 
-			}
-			// runnerObject.setPosition(newPos);
+    @Override
+    public String toString() {
 
-			moveRunner(newPos);
-			visitedList.add(oldPos);
+        int x = 0, y = 0;
+        String result = "";
+        while (y < (int) positionOfInitalizer.getY()) {
 
-			// if (objectAtOld.getType().equals(TypeObjet.RUNNER) ){//||
-			// objectAtOld.getType().equals(TypeObjet.FRIC)) {
-			// change(oldPos, new WorldObject());
-			// }
+            while (x < (int) positionOfInitalizer.getX()) {
+                result += "[" + get(x, y).toString() + "]";
+                x++;
+            }
+            x = 0;
+            y++;
+            System.out.print("\n");
+            result += "\n";
+        }
+        return result;
+    }
 
-		} else {
+    public boolean isVisited(SVector3d position) {
+        return visitedList.contains(position);
+    }
 
-			return false;
-		}
+    public static SVector3d directionToVector(Direction direction) {
+        SVector3d position = new SVector3d();
+        switch (direction) {
+            case UP:
+                position = new SVector3d(0.0, -1.0);
+                break;
+            case DOWN:
+                position = new SVector3d(0.0, 1.0);
+                break;
+            case LEFT:
+                position = new SVector3d(-1.0, 0.0);
+                break;
+            case NONE:
+            case RIGHT:
+                position = new SVector3d(1.0, 0.0);
+                break;
+        }
+        return position;
+    }
+    public boolean spaceIsAvailable(SVector3d position) {
+        if (isInBounds(position)) {
+            WorldObject objectAtPos = this.get(position);
+            TypeObjet type = objectAtPos.getType();
+            switch (type) {
+                case VISITED:
+                    break;
+                case ESPACE:
+                    break;
+                case CORDE:
+                    break;
+                case FRIC:
+                    break;
+                case SORTIE:
+                    break;
+                case ECHELLE:
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+        return false;
 
-		return true;
-	}
+    }
 
-	public boolean isInBounds(SVector3d position) {
+    public boolean canMove(Direction direction){
+        SVector3d directionVector = directionToVector(direction);
+        SVector3d nextPos = getActualRunPos().add(directionVector);
+        if(spaceIsAvailable(nextPos)){
+
+            WorldObject objectAtCurr = get(getActualRunPos());
+
+
+            /* Test if ladder up */
+            if(direction == Direction.UP){
+                if(objectAtCurr.getType() == TypeObjet.ECHELLE){
+                    return true;
+                }
+            }
+
+            /* Test if corde down */
+
+            else if(direction == Direction.DOWN){
+                if(objectAtCurr.getType() == TypeObjet.CORDE){
+                    if(spaceIsAvailable(nextPos)){
+                        return true;
+                    }
+                }
+            }
+            else{
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public void moveRunner(SVector3d destination) {
+        SVector3d oldPos = runnerObject.getPosition();
+//        change(oldPos, new WorldObject());
+        runnerObject.setPosition(destination);
+//        change(destination, runnerObject);
+    }
+
+    public boolean move(Direction direction) {
+        SVector3d positionToAdd = new SVector3d();
+        switch (direction) {
+            case UP:
+                positionToAdd = new SVector3d(0.0, -1.0);
+                break;
+            case DOWN:
+                positionToAdd = new SVector3d(0.0, 1.0);
+                break;
+            case LEFT:
+                positionToAdd = new SVector3d(-1.0, 0.0);
+                break;
+            case NONE:
+                return true;
+            case RIGHT:
+                positionToAdd = new SVector3d(1.0, 0.0);
+                break;
+        }
+        SVector3d oldPos = runnerObject.getPosition();
+        SVector3d newPos = runnerObject.getPosition().add(positionToAdd);
+
+        if (!isInBounds(newPos)) {
+            return false;
+        }
+
+        WorldObject objectAtOld = this.get(oldPos);
+        WorldObject objectAtPos = this.get(newPos);
+
+        if (direction.equals(Direction.UP) && !objectAtOld.getType().equals(TypeObjet.ECHELLE)) {
+            return false;
+        }
+        if (direction.equals(Direction.DOWN) && !objectAtOld.getType().equals(TypeObjet.ECHELLE)
+                && !objectAtOld.getType().equals(TypeObjet.CORDE)) {
+            return false;
+        }
+
+        if (spaceIsAvailable(newPos) && !(dontComeBack && isVisited(newPos))) {
+
+            if (objectAtPos.getType().equals(TypeObjet.ESPACE)) {
+
+                change(newPos, runnerObject);
+
+            } else {
+
+            }
+            // runnerObject.setPosition(newPos);
+
+            moveRunner(newPos);
+            visitedList.add(oldPos);
+
+            // if (objectAtOld.getType().equals(TypeObjet.RUNNER) ){//||
+            // objectAtOld.getType().equals(TypeObjet.FRIC)) {
+            // change(oldPos, new WorldObject());
+            // }
+
+        } else {
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isInBounds(SVector3d position) {
         return position.getX() < positionOfInitalizer.getX() &&
                 position.getY() < positionOfInitalizer.getY() &&
                 position.getX() >= 0.0 &&
                 position.getY() >= 0.0;
     }
 
-	public boolean isDead(SVector3d position) {
-		double cpt = 1.0;
+    public boolean isDead(SVector3d position) {
+        double cpt = 1.0;
 
-		boolean reponseD = false;
-		boolean reponseG = false;
-		boolean reponseBD = true;
-		boolean reponseBG = true;
-		while (isInBounds(position.add(new SVector3d(cpt, 0, 0)))) {
+        boolean reponseD = false;
+        boolean reponseG = false;
+        boolean reponseBD = true;
+        boolean reponseBG = true;
+        while (isInBounds(position.add(new SVector3d(cpt, 0, 0)))) {
 
-			if (!spaceIsAvailable(position.add(new SVector3d(cpt, 0, 0))) && reponseD == false) {
-				reponseD = true;
+            if (!spaceIsAvailable(position.add(new SVector3d(cpt, 0, 0))) && reponseD == false) {
+                reponseD = true;
 
-			}
-			if ((get(position.add(new SVector3d(cpt, 0, 0))).getType().equals(TypeObjet.ECHELLE)
-					|| get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.CORDE))
-					&& reponseD == false) {
-				return false;
-			}
+            }
+            if ((get(position.add(new SVector3d(cpt, 0, 0))).getType().equals(TypeObjet.ECHELLE)
+                    || get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.CORDE))
+                    && reponseD == false) {
+                return false;
+            }
 
-			if (spaceIsAvailable(position.add(new SVector3d(cpt, 1.0, 0)))
-					|| get(position.add(new SVector3d(cpt, 1.0, 0))).getType().equals(TypeObjet.BLOC_BRIQUE)) {
-				reponseBD = false;
-			}
-			cpt = cpt + 1.0;
+            if (spaceIsAvailable(position.add(new SVector3d(cpt, 1.0, 0)))
+                    || get(position.add(new SVector3d(cpt, 1.0, 0))).getType().equals(TypeObjet.BLOC_BRIQUE)) {
+                reponseBD = false;
+            }
+            cpt = cpt + 1.0;
 
-		}
-		cpt = 1.0;
-		while (isInBounds(position.add(new SVector3d(-cpt, 0, 0)))) {
-			if (!spaceIsAvailable(position.add(new SVector3d(-cpt, 0, 0))) && reponseG == false) {
-				reponseG = true;
-			}
-			if ((get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.ECHELLE)
-					|| get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.CORDE))
-					&& reponseG == false) {
-				return false;
-			}
+        }
+        cpt = 1.0;
+        while (isInBounds(position.add(new SVector3d(-cpt, 0, 0)))) {
+            if (!spaceIsAvailable(position.add(new SVector3d(-cpt, 0, 0))) && reponseG == false) {
+                reponseG = true;
+            }
+            if ((get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.ECHELLE)
+                    || get(position.add(new SVector3d(-cpt, 0, 0))).getType().equals(TypeObjet.CORDE))
+                    && reponseG == false) {
+                return false;
+            }
 
-			if (spaceIsAvailable(position.add(new SVector3d(-cpt, 1.0, 0)))
-					|| get(position.add(new SVector3d(-cpt, 1.0, 0))).getType().equals(TypeObjet.BLOC_BRIQUE)) {
-				reponseBG = false;
-			}
-			cpt = cpt + 1.0;
-		}
-		if (reponseD && reponseG && reponseBD && reponseBG) {
-			return true;
-		}
-		return false;
+            if (spaceIsAvailable(position.add(new SVector3d(-cpt, 1.0, 0)))
+                    || get(position.add(new SVector3d(-cpt, 1.0, 0))).getType().equals(TypeObjet.BLOC_BRIQUE)) {
+                reponseBG = false;
+            }
+            cpt = cpt + 1.0;
+        }
+        if (reponseD && reponseG && reponseBD && reponseBG) {
+            return true;
+        }
+        return false;
 
-	}
-	// return false;
-	// boolean reponseD = false;
-	// boolean reponseG = false;
-	// boolean reponseB = false;
-	// SVector3d posD = position.add(new SVector3d(1.0, 0, 0));
-	// SVector3d posG = position.add(new SVector3d(-1.0, 0, 0));
-	// SVector3d posB = position.add(new SVector3d(0, 1.0, 0));
-	// if(isInBounds(position)&&spaceIsAvailable(position)||!isDead(posD.add(new
-	// SVector3d(0, 1.0, 0)))||!isDead(posG.add(new SVector3d(0,1.0,0)))){
-	// return false;
-	// }else {
-	// reponseD = isDead(posD);
-	// reponseG = isDead(posG);
-	// reponseB = isDead(posB);
-	// if(reponseD&&reponseG&&reponseB) {
-	// return true;
-	// }
-	// return false;
-	// }
-	// }
+    }
+    // return false;
+    // boolean reponseD = false;
+    // boolean reponseG = false;
+    // boolean reponseB = false;
+    // SVector3d posD = position.add(new SVector3d(1.0, 0, 0));
+    // SVector3d posG = position.add(new SVector3d(-1.0, 0, 0));
+    // SVector3d posB = position.add(new SVector3d(0, 1.0, 0));
+    // if(isInBounds(position)&&spaceIsAvailable(position)||!isDead(posD.add(new
+    // SVector3d(0, 1.0, 0)))||!isDead(posG.add(new SVector3d(0,1.0,0)))){
+    // return false;
+    // }else {
+    // reponseD = isDead(posD);
+    // reponseG = isDead(posG);
+    // reponseB = isDead(posB);
+    // if(reponseD&&reponseG&&reponseB) {
+    // return true;
+    // }
+    // return false;
+    // }
+    // }
 
-	public void change(SVector3d position, WorldObject newObject) {
-		this.change((int) position.getX(), (int) position.getY(), newObject);
-	}
+    public void change(SVector3d position, WorldObject newObject) {
+        this.change((int) position.getX(), (int) position.getY(), newObject);
+    }
 
-	public void change(int x, int y, WorldObject newObject) {
-		worldMap.get(x).set(y, newObject);
-	}
+    public void change(int x, int y, WorldObject newObject) {
+        worldMap.get(x).set(y, newObject);
+    }
 
-	public ArrayList<WorldObject> getFricList() {
-		return fricList;
-	}
+    public ArrayList<WorldObject> getFricList() {
+        return fricList;
+    }
 
-	public ArrayList<WorldObject> getLadderList() {
-		return ladderList;
-	}
+    public ArrayList<WorldObject> getLadderList() {
+        return ladderList;
+    }
 
-	public ArrayList<WorldObject> getRopeList() {
-		return ropeList;
-	}
+    public ArrayList<WorldObject> getRopeList() {
+        return ropeList;
+    }
 
-	public WorldObject getPorte() {
-		return porte;
-	}
+    public WorldObject getPorte() {
+        return porte;
+    }
 
-	public WorldObject get(int x, int y) {
-		return worldMap.get(x).get(y);
-	}
+    public WorldObject get(int x, int y) {
+        return worldMap.get(x).get(y);
+    }
 
-	public WorldObject get(SVector3d position) {
-		return get((int) position.getX(), (int) position.getY());
-	}
+    public WorldObject get(SVector3d position) {
+        return get((int) position.getX(), (int) position.getY());
+    }
 
-	public RunnerObject getRunnerObject() {
-		return runnerObject;
-	}
+    public RunnerObject getRunnerObject() {
+        return runnerObject;
+    }
 
-	public Cheminement getCheminement() {
-		return cheminement;
-	}
+    public Cheminement getCheminement() {
+        return cheminement;
+    }
 
-	public ArrayList<SVector3d> getVisitedList() {
-		return visitedList;
-	}
+    public ArrayList<SVector3d> getVisitedList() {
+        return visitedList;
+    }
 
-	public void setVisitedList(ArrayList<SVector3d> visitedList) {
-		this.visitedList = visitedList;
-	}
+    public void setVisitedList(ArrayList<SVector3d> visitedList) {
+        this.visitedList = visitedList;
+    }
 
-	public String[] getStringList() {
-		String[] stringList = new String[(int) positionOfInitalizer.getY()];
-		int x = 0, y = 0;
-		while (y < (int) positionOfInitalizer.getY()) {
+    public String[] getStringList() {
+        String[] stringList = new String[(int) positionOfInitalizer.getY()];
+        int x = 0, y = 0;
+        while (y < (int) positionOfInitalizer.getY()) {
 
-			String string = "";
-			while (x < (int) positionOfInitalizer.getX()) {
-				string += get(x, y).toString();
-				x++;
-			}
-			stringList[y] = string;
-			x = 0;
-			y++;
-		}
+            String string = "";
+            while (x < (int) positionOfInitalizer.getX()) {
+                string += get(x, y).toString();
+                x++;
+            }
+            stringList[y] = string;
+            x = 0;
+            y++;
+        }
 
-		return stringList;
-	}
+        return stringList;
+    }
 
-	public void printString() {
-		/*
-		 * String[] stringList = getStringList(); for (String string : stringList) {
-		 * System.out.println(string); }
-		 */
 
-		String[] stringList = new String[(int) positionOfInitalizer.getY()];
-		int x = 0, y = 0;
-		while (y < (int) positionOfInitalizer.getY()) {
 
-			String string = "";
-			while (x < (int) positionOfInitalizer.getX()) {
-				if (visitedList.contains(new SVector3d((double) x, (double) y))) {
-					string += "X";
-				} else {
-					string += get(x, y).toString();
-				}
-				x++;
-			}
-			System.out.println(string);
-			stringList[y] = string;
-			x = 0;
-			y++;
 
-		}
-	}
+    public void printString() {
+        /*
+         * String[] stringList = getStringList(); for (String string : stringList) {
+         * System.out.println(string); }
+         */
 
-	public void setActualRunPos(SVector3d actualRunPos) {
-		this.actualRunPos = actualRunPos;
-	}
+        String[] stringList = new String[(int) positionOfInitalizer.getY()];
+        int x = 0, y = 0;
+        while (y < (int) positionOfInitalizer.getY()) {
 
-	public SVector3d getActualRunPos() {
-		return actualRunPos;
-	}
+            String string = "";
+            while (x < (int) positionOfInitalizer.getX()) {
+                if (runnerObject.getPosition().equals(new SVector3d((double) x, (double) y))) {
+                    string += "X";
+                } else {
+                    string += get(x, y).toString();
+                }
+                x++;
+            }
+            System.out.println(string);
+            stringList[y] = string;
+            x = 0;
+            y++;
 
-	public World worldCopy(ArrayList<SVector3d> visitedList) {
-		World world = new World(getStringList());
-		world.setVisitedList((ArrayList<SVector3d>) visitedList.clone());
-		return world;
-	}
+        }
+    }
+
+    public void setActualRunPos(SVector3d actualRunPos) {
+        this.actualRunPos = actualRunPos;
+    }
+
+    public SVector3d getActualRunPos() {
+        return actualRunPos;
+    }
+
+    public World worldCopy(ArrayList<SVector3d> visitedList) {
+        World world = new World(getStringList());
+        world.setVisitedList((ArrayList<SVector3d>) visitedList.clone());
+        return world;
+    }
 }

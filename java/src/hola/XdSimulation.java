@@ -6,88 +6,106 @@ import java.util.ArrayList;
 
 public class XdSimulation {
     private World world;
-    private Direction direction;
-    private ArrayList<Direction> directionsList = new ArrayList<>();
 
-    private SVector3d destination;
 
-    int maxShit;
-
-    int remainingTries = 0;
-
-    public XdSimulation(World world, Direction direction, SVector3d destination, int remainingTries) {
-        this.world = new World(world.getStringList());
-        this.direction = direction;
-        this.remainingTries = remainingTries;
-        this.destination = destination;
+    public XdSimulation(String[] grid) {
+        world = new World(grid);
     }
 
 
-    public static XdSimulation simulation0(World world, SVector3d destination, int remainingTries) {
-        return new XdSimulation(world, Direction.NONE, destination, remainingTries);
-    }
 
-    public static XdSimulation simulation1(World world, SVector3d destination, int remainingTries) {
-        return new XdSimulation(world, Direction.LEFT, destination, remainingTries);
-    }
 
-    public static XdSimulation simulation2(World world, SVector3d destination, int remainingTries) {
-        return new XdSimulation(world, Direction.RIGHT, destination, remainingTries);
-    }
-    public static XdSimulation simulation3(World world, SVector3d destination, int remainingTries) {
-        return new XdSimulation(world, Direction.UP, destination, remainingTries);
-    }
-    public static XdSimulation simulation4(World world, SVector3d destination, int remainingTries) {
-        return new XdSimulation(world, Direction.DOWN, destination, remainingTries);
-    }
 
-    public ArrayList<Direction> simulate() {
 
-        if(destination.equals(world.getRunnerObject().getPosition())){
-            System.out.println("ADFJ JDFJADF JASDJF AJD FA FASDF JASDF JASDJFASDJF AJSDFJASDJFASJDFAJSFD== " + world.getRunnerObject().getPosition() + " : " + destination);
-            return directionsList;
-        }
-        if(remainingTries == 0){
-            System.out.println(world.getRunnerObject().getPosition() + " remaining tries 0");
-            return null;
+    public boolean simulate(ArrayList<Direction> directionList) {
+
+        SVector3d runnerPos = getWorld().getRunnerObject().getPosition();
+        for (int i = 0; i < directionList.size(); i++) {
+            Direction direction = directionList.get(i);
+            System.out.println(direction + " : " + world.canMove(direction) + " : " + World.directionToVector(direction));
+            if (world.canMove(direction)) {
+                SVector3d nextPos = runnerPos.add(World.directionToVector(direction));
+                world.moveRunner(nextPos);
+                runnerPos = nextPos;
+
+                WorldObject objectAtPos = world.get(runnerPos);
+                if(objectAtPos.getType() == TypeObjet.FRIC){
+                    world.getFricList().remove(objectAtPos);
+                    world.change(runnerPos, new WorldObject());
+                }
+            }
+            world.printString();
+            System.out.println(world.getFricList() + " + " +world.getFricList().isEmpty());
+            System.out.println("--------------\n\n\n");
+
+
+            world.setActualRunPos(runnerPos);
         }
 
 
-        System.out.println(world.getRunnerObject().getPosition() + " : moved" + direction + " : " + remainingTries +" + [[[[[[" + destination + "{{{{{");
-        boolean moved = world.move(direction);
-
-        world.print();
-        if (moved) {
-//            System.out.println(direction);
-            directionsList.add(direction);
+        return world.get(runnerPos).getType() == TypeObjet.SORTIE;
+    }
 
 
-            ArrayList<Direction> direction1 = XdSimulation.simulation1(world, destination, remainingTries - 1).simulate();
-            ArrayList<Direction> direction2 = XdSimulation.simulation2(world, destination, remainingTries - 1).simulate();
-//            ArrayList<Direction> direction3 = XdSimulation.simulation3(world, destination, remainingTries - 1).simulate();
-//            ArrayList<Direction> direction4 = XdSimulation.simulation4(world, destination, remainingTries - 1).simulate();
-
-            if(direction1 != null){
-                directionsList.addAll(direction1);
-                return directionsList;
-            }
-
-            if(direction2 != null){
-                directionsList.addAll(direction2);
-                return directionsList;
-            }
-            /*if(direction3 != null){
-                directionsList.addAll(direction3);
-                return directionsList;
-            }
-            if(direction4 != null){
-                directionsList.addAll(direction4);
-                return directionsList;
-            }*/
 
 
-        }
-        return null;
+    public World getWorld() {
+        return world;
+    }
+
+    public static void main(String[] args) {
+
+        String[] grid = {"         ",
+                "         ",
+                "S $  H   ",
+                "#####H   ",
+                "     H   ",
+                "& $  H $ ",
+                "@@@@@@@@@",
+        };
+        XdSimulation xdSimulation = new XdSimulation(grid);
+        World world2 = new World(xdSimulation.getWorld().getStringList());
+//        Cheminement cheminement = new Cheminement(world2, world2.getRunnerObject(),world2.getPorte() );
+//                xdSimulation.getWorld().getCheminement();
+//        ArrayList<Direction> directions = cheminement.path();
+//        ArrayList<Direction> directions = new ArrayList<>();
+
+        Simulation sim = new Simulation(grid);
+
+        ArrayList<Direction> direction1 = sim.goToFric(xdSimulation.getGrid(), xdSimulation.getWorld().getRunnerObject());
+
+        xdSimulation.simulate(direction1);
+
+//        SVector3d playerPos = xdSimulation.getRunnerObject().getPosition();
+//        xdSimulation = new XdSimulation(xdSimulation.getGrid());
+//        xdSimulation.getWorld().initPlayer(playerPos);
+
+        ArrayList<Direction> dir = sim.goToLadder(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
+
+        xdSimulation.simulate(dir);
+
+
+        ArrayList<Direction> dir2 = sim.goUpLadder(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
+        xdSimulation.simulate(dir2);
+
+        ArrayList<Direction> dir3 = sim.goToFric(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
+        xdSimulation.simulate(dir3);
+
+        ArrayList<Direction> dir4 = sim.goToDoor(xdSimulation.getGrid(), xdSimulation.getRunnerObject());
+        xdSimulation.simulate(dir4);
+    }
+
+
+    public void reset(){
+
+    }
+
+    public RunnerObject getRunnerObject(){
+        return getWorld().getRunnerObject();
+    }
+    public String[] getGrid(){
+
+        return getWorld().getStringList();
     }
 }
 
