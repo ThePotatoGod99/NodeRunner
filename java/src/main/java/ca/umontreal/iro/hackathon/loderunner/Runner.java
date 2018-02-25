@@ -24,7 +24,7 @@ public class Runner extends BasicRunner {
 	 * Notez: le niveau de départ sera 1 pour tout le monde pendant la compétition
 	 * :v)
 	 */
-	public static final int START_LEVEL = 2;
+	public static final int START_LEVEL = 5;
 
 	public Runner() {
 		super(ROOM, START_LEVEL);

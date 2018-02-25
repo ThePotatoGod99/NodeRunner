@@ -1,6 +1,8 @@
 package hola;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import main.java.ca.umontreal.iro.hackathon.loderunner.Direction;
+import main.java.ca.umontreal.iro.hackathon.loderunner.Runner;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -26,28 +28,127 @@ public class Simulation {
         this.world =  new World(world.getStringList());
 
         world.getVisitedList().add(new SVector3d(1, 4.0));
-        System.out.println(world.getVisitedList());
-
-        System.out.println(this.world.getVisitedList());
 
         world.dontComeBack = true;
         this.destination = destination;
     }
 
+    public boolean onSameHeightAsFricDoor(SVector3d position){
+        for(WorldObject fric : world.getFricList()){
+            if(position.getY() == fric.getPosition().getY()){
+                return true;
+            }
+        }
+        if(position.getY() == world.getPorte().getPosition().getY()){
+            return true;
+        }
+        return false;
+    }
+
+    /*public CheminEtPos cheminUPDOWN(WorldObject objetDepart){
+        SVector3d lastPos = new SVector3d();
+        ArrayList<Direction> chemin = new ArrayList<Direction>();
+        ArrayList<Direction> temp = new ArrayList<Direction>();
+        SVector3d iterator2 = objetDepart.getPosition();
+        Direction direction = Direction.UP;
+        int i = 0;
+//        while(world.isInBounds(iterator2) && i != 2) {
+        SVector3d positionToAdd = new SVector3d();
+        switch (direction) {
+            case UP:
+                positionToAdd = new SVector3d(0.0, -1.0);
+                break;
+            case DOWN:
+                positionToAdd = new SVector3d(0.0, 1.0);
+                break;
+            case LEFT:
+                positionToAdd = new SVector3d(-1.0, 0.0);
+                break;
+            case NONE:
+            case RIGHT:
+                positionToAdd = new SVector3d(1.0, 0.0);
+                break;
+        }
+        for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
+            boolean xd = Runner.goToFric2(world);
+            System.out.println(" ADSFA DF SGGFFF  " + iterator + " : " + xd + " : " + world.getFricList().get(0).getPosition() + " : " + temp);
+
+            if (xd) {
+                world.moveRunner(iterator);
+                chemin.addAll(temp);
+                return new CheminEtPos(chemin, iterator);
+            }
+            temp.add(direction);
+        }
+        temp.clear();
+        direction = Direction.DOWN;
+        i++;
+//        }
+
+
+        return new CheminEtPos();
+    }
+*/
+
+    public ArrayList<Direction> cheminAB(WorldObject objetDepart,WorldObject objetArrive){
+        if(objetArrive.getPosition().getY() != objetDepart.getPosition().getY()){
+//            System.out.println("No shit");
+            return new ArrayList<Direction>();
+        }
+        else{
+            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
+        }
+        ArrayList<Direction> chemin = new ArrayList<Direction>();
+        ArrayList<Direction> temp = new ArrayList<Direction>();
+        SVector3d iterator2 = objetDepart.getPosition();
+        Direction direction = Direction.RIGHT;
+        int i = 0;
+        while(world.isInBounds(iterator2) && i != 2) {
+            SVector3d positionToAdd = new SVector3d();
+            switch (direction) {
+                case UP:
+                    positionToAdd = new SVector3d(0.0, -1.0);
+                    break;
+                case DOWN:
+                    positionToAdd = new SVector3d(0.0, 1.0);
+                    break;
+                case LEFT:
+                    positionToAdd = new SVector3d(-1.0, 0.0);
+                    break;
+                case NONE:
+                case RIGHT:
+                    positionToAdd = new SVector3d(1.0, 0.0);
+                    break;
+            }
+            for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
+                System.out.println(" ADFDSF A ADADADF AD D" + iterator + objetArrive.getPosition());
+                if(iterator.equals(objetArrive.getPosition())) {
+                    chemin.addAll(temp);
+                    return chemin;
+                } else if(iterator.getY()!= objetArrive.getY() && world.get(iterator).getType()==TypeObjet.ECHELLE) {
+                }
+                temp.add(direction);
+            }
+            temp.clear();
+            direction = Direction.LEFT;
+            i++;
+        }
+        return chemin;
+    }
     public ArrayList<Direction> simulate() {
 
         int remainingTries = 10;
 //        while (true) {
-            System.out.println(world.getRunnerObject().getPosition() + " REMAINING*  " + remainingTries);
-            ArrayList<Direction> direction1 = XdSimulation.simulation0(world, destination, remainingTries ).simulate();
+        System.out.println(world.getRunnerObject().getPosition() + " REMAINING*  " + remainingTries);
+        ArrayList<Direction> direction1 = XdSimulation.simulation0(world, destination, remainingTries ).simulate();
 //            ArrayList<Direction> direction2 = XdSimulation.simulation2(world, destination, remainingTries ).simulate();
 //            ArrayList<Direction> direction3 = XdSimulation.simulation3(world, destination, remainingTries ).simulate();
 //            ArrayList<Direction> direction4 = XdSimulation.simulation4(world, destination, remainingTries ).simulate();
 
-            if (direction1 != null) {
-                directionsList.addAll(direction1);
-                return directionsList;
-            }
+        if (direction1 != null) {
+            directionsList.addAll(direction1);
+            return directionsList;
+        }
 
 //            if (direction2 != null) {
 //                directionsList.addAll(direction2);
@@ -69,7 +170,7 @@ public class Simulation {
             }
         }*/
 
-   return directionsList;
+        return directionsList;
 
 
 
@@ -129,6 +230,8 @@ public class Simulation {
         }
         return minIndex;
     }
+
+
 
 
 //    public boolean nextStep(int direction) {
