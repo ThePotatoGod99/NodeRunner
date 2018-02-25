@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
 	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "andylecool";
+	public static final String ROOM = "okn";
 
 	/*
 	 * Utilisez cette variable pour choisir le niveau de départ
@@ -24,7 +24,7 @@ public class Runner extends BasicRunner {
 	 * Notez: le niveau de départ sera 1 pour tout le monde pendant la compétition
 	 * :v)
 	 */
-	public static final int START_LEVEL = 2;
+	public static final int START_LEVEL = 3;
 
 	public Runner() {
 		super(ROOM, START_LEVEL);
