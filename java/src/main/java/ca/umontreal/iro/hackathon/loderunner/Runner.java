@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -105,19 +104,49 @@ public class Runner extends BasicRunner {
 //		directions.add(Direction.LEFT);
 
 
-        while (!goToDoor()) {
+        while (!goToDoorOrLadder()) {
+
+//        goToDoorOrLadder();
+            world.printString();
+            goUpLadder();
+            world.printString();
             goToFric();
-            if (goToLadder()) {
-                goUpLadder();
-                break;
-            }
+            goToDoor();
+
+
         }
+//        goToDoorOrLadder();
+        System.out.println(goToFric());
+
+//        while (!goToDoor()) {
+//            goToFric();
+//            if (goToLadder()) {
+//                goUpLadder();
+//
+//            }
+//            world.printString();
+//        }
 
         System.out.println("directions: " + directions);
 
     }
 
+    public boolean goToDoorOrLadder() {
+        boolean xd = true, xd2 = false;
+        while (xd) {
+            boolean xd1 = goToFric();
+            xd2 = goToDoor();
+
+            System.out.println(goToFric());
+            System.out.println(goToLadder());
+            xd = xd1 || xd2;
+
+        }
+        return xd2;
+    }
+
     public boolean goToFric() {
+//        System.out.println("GoToFric");
         int i = 0;
         boolean result = false;
 
@@ -137,6 +166,7 @@ public class Runner extends BasicRunner {
     }
 
     public boolean goToLadder() {
+//        System.out.println("goToLadder");
         int i = 0;
         boolean result = false;
 
@@ -145,6 +175,7 @@ public class Runner extends BasicRunner {
             Simulation simulation = new Simulation(world, new SVector3d());
             ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), tempLadderList.get(i));
             if (directionsTemp.size() != 0) {
+
                 directions.addAll(directionsTemp);
                 world.moveRunner(tempLadderList.get(i).getPosition());
                 tempLadderList.remove(i);
@@ -157,33 +188,23 @@ public class Runner extends BasicRunner {
     }
 
     public void goUpLadder() {
+        System.out.println("goUpLadder");
         int i = 0;
-        while (!(goToDoor() && goToFric())) {
-            Simulation simulation = new Simulation(world, new SVector3d());
-            ArrayList<Direction> directionsTemp = simulation.cheminUPDOWN(world.getRunnerObject(), tempLadderList.get(i));
-            if (directionsTemp.size() != 0) {
-                directions.addAll(directionsTemp);
-                world.moveRunner(tempLadderList.get(i).getPosition());
-                tempLadderList.remove(i);
-                i--;
-            }
-            i++;
-        }
-        ArrayList<WorldObject> tempLadderList = (ArrayList) world.getLadderList().clone();
-        while (i < tempLadderList.size()) {
-            Simulation simulation = new Simulation(world, new SVector3d());
-            ArrayList<Direction> directionsTemp = simulation.cheminUPDOWN(world.getRunnerObject(), tempLadderList.get(i));
-            if (directionsTemp.size() != 0) {
-                directions.addAll(directionsTemp);
-                world.moveRunner(tempLadderList.get(i).getPosition());
-                tempLadderList.remove(i);
-                i--;
-            }
-            i++;
+
+        Simulation simulation = new Simulation(world, new SVector3d());
+        Simulation.CheminEtPos cheminEtPos = simulation.cheminUPDOWN(world.getRunnerObject());
+        ArrayList<Direction> directionsTemp = cheminEtPos.getDirections();
+        System.out.println("ASDF ASDF ASD" + directionsTemp);
+        if (directionsTemp.size() != 0) {
+            directions.addAll(directionsTemp);
+            world.moveRunner(cheminEtPos.getPosition());
+            i--;
         }
     }
 
+
     public boolean goToDoor() {
+        System.out.println("goToDoor");
         if (!world.getFricList().isEmpty()) {
             return false;
         }

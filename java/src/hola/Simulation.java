@@ -31,21 +31,26 @@ public class Simulation {
         this.destination = destination;
     }
 
+    public boolean onSameHeightAsFricDoor(SVector3d position){
+        for(WorldObject fric : world.getFricList()){
+            if(position.getY() == fric.getPosition().getY()){
+                return true;
+            }
+        }
+        if(position.getY() == world.getPorte().getPosition().getY()){
+            return true;
+        }
+        return false;
+    }
 
-    public ArrayList<Direction> cheminUPDOWN(WorldObject objetDepart,WorldObject objetArrive){
-        if(objetArrive.getPosition().getX() != objetDepart.getPosition().getX()){
-            System.out.println("No shit");
-            return new ArrayList<Direction>();
-        }
-        else{
-            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
-        }
+    public CheminEtPos cheminUPDOWN(WorldObject objetDepart){
+        SVector3d lastPos = new SVector3d();
         ArrayList<Direction> chemin = new ArrayList<Direction>();
         ArrayList<Direction> temp = new ArrayList<Direction>();
         SVector3d iterator2 = objetDepart.getPosition();
         Direction direction = Direction.UP;
         int i = 0;
-        while(world.isInBounds(iterator2) && i != 2) {
+//        while(world.isInBounds(iterator2) && i != 2) {
             SVector3d positionToAdd = new SVector3d();
             switch (direction) {
                 case UP:
@@ -63,24 +68,27 @@ public class Simulation {
                     break;
             }
             for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
-                if(iterator.equals(objetArrive.getPosition())) {
+                if(onSameHeightAsFricDoor(iterator)){
+
+                    world.moveRunner(iterator);
                     chemin.addAll(temp);
-                    return chemin;
-                } else if(iterator.getY()!= objetArrive.getY() && world.get(iterator).getType()==TypeObjet.ECHELLE) {
+                    return new CheminEtPos(chemin, iterator);
                 }
                 temp.add(direction);
             }
             temp.clear();
             direction = Direction.DOWN;
             i++;
-        }
-        return chemin;
+//        }
+
+
+        return new CheminEtPos();
     }
 
 
     public ArrayList<Direction> cheminAB(WorldObject objetDepart,WorldObject objetArrive){
         if(objetArrive.getPosition().getY() != objetDepart.getPosition().getY()){
-            System.out.println("No shit");
+//            System.out.println("No shit");
             return new ArrayList<Direction>();
         }
         else{
@@ -216,6 +224,29 @@ public class Simulation {
             }
         }
         return minIndex;
+    }
+
+    public class CheminEtPos{
+        private ArrayList<Direction> directions;
+        private SVector3d position;
+
+        public CheminEtPos(ArrayList<Direction> directions, SVector3d position) {
+            this.directions = directions;
+            this.position = position;
+
+        }
+
+        public CheminEtPos() {
+            this.directions = new ArrayList<>();
+            this.position = new SVector3d();
+        }
+        public SVector3d getPosition() {
+            return position;
+        }
+
+        public ArrayList<Direction> getDirections() {
+            return directions;
+        }
     }
 
 
