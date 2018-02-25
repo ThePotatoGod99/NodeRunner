@@ -16,7 +16,7 @@ public class XdSimulation {
     int remainingTries = 0;
 
     public XdSimulation(World world, Direction direction, SVector3d destination, int remainingTries) {
-        this.world = new World(world.getStringList(), true);
+        this.world = new World(world.getStringList());
         this.direction = direction;
         this.remainingTries = remainingTries;
         this.destination = destination;
@@ -56,14 +56,14 @@ public class XdSimulation {
         System.out.println(world.getRunnerObject().getPosition() + " : moved" + direction + " : " + remainingTries +" + [[[[[[" + destination + "{{{{{");
         boolean moved = world.move(direction);
 
-        world.printString();
+        world.print();
         if (moved) {
 //            System.out.println(direction);
             directionsList.add(direction);
 
 
-            ArrayList<Direction> direction1 = XdSimulation.simulation1(new World(world.getStringList(), true), destination, remainingTries - 1).simulate();
-//            ArrayList<Direction> direction2 = XdSimulation.simulation2(new World(world.getStringList(), true), destination, remainingTries - 1).simulate();
+            ArrayList<Direction> direction1 = XdSimulation.simulation1(world, destination, remainingTries - 1).simulate();
+            ArrayList<Direction> direction2 = XdSimulation.simulation2(world, destination, remainingTries - 1).simulate();
 //            ArrayList<Direction> direction3 = XdSimulation.simulation3(world, destination, remainingTries - 1).simulate();
 //            ArrayList<Direction> direction4 = XdSimulation.simulation4(world, destination, remainingTries - 1).simulate();
 
@@ -72,10 +72,10 @@ public class XdSimulation {
                 return directionsList;
             }
 
-//            if(direction2 != null){
-//                directionsList.addAll(direction2);
-//                return directionsList;
-//            }
+            if(direction2 != null){
+                directionsList.addAll(direction2);
+                return directionsList;
+            }
             /*if(direction3 != null){
                 directionsList.addAll(direction3);
                 return directionsList;

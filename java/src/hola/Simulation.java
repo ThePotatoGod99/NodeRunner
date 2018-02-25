@@ -23,17 +23,105 @@ public class Simulation {
     private ArrayList<Direction> directionsList = new ArrayList<>();
 
     public Simulation(World world, SVector3d destination) {
-        this.world =  new World(world.getStringList(), true);
+        this.world =  new World(world.getStringList());
 
         world.getVisitedList().add(new SVector3d(1, 4.0));
-        System.out.println(world.getVisitedList());
-
-        System.out.println(this.world.getVisitedList());
 
         world.dontComeBack = true;
         this.destination = destination;
     }
 
+
+    public ArrayList<Direction> cheminUPDOWN(WorldObject objetDepart,WorldObject objetArrive){
+        if(objetArrive.getPosition().getX() != objetDepart.getPosition().getX()){
+            System.out.println("No shit");
+            return new ArrayList<Direction>();
+        }
+        else{
+            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
+        }
+        ArrayList<Direction> chemin = new ArrayList<Direction>();
+        ArrayList<Direction> temp = new ArrayList<Direction>();
+        SVector3d iterator2 = objetDepart.getPosition();
+        Direction direction = Direction.UP;
+        int i = 0;
+        while(world.isInBounds(iterator2) && i != 2) {
+            SVector3d positionToAdd = new SVector3d();
+            switch (direction) {
+                case UP:
+                    positionToAdd = new SVector3d(0.0, -1.0);
+                    break;
+                case DOWN:
+                    positionToAdd = new SVector3d(0.0, 1.0);
+                    break;
+                case LEFT:
+                    positionToAdd = new SVector3d(-1.0, 0.0);
+                    break;
+                case NONE:
+                case RIGHT:
+                    positionToAdd = new SVector3d(1.0, 0.0);
+                    break;
+            }
+            for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
+                if(iterator.equals(objetArrive.getPosition())) {
+                    chemin.addAll(temp);
+                    return chemin;
+                } else if(iterator.getY()!= objetArrive.getY() && world.get(iterator).getType()==TypeObjet.ECHELLE) {
+                }
+                temp.add(direction);
+            }
+            temp.clear();
+            direction = Direction.DOWN;
+            i++;
+        }
+        return chemin;
+    }
+
+
+    public ArrayList<Direction> cheminAB(WorldObject objetDepart,WorldObject objetArrive){
+        if(objetArrive.getPosition().getY() != objetDepart.getPosition().getY()){
+            System.out.println("No shit");
+            return new ArrayList<Direction>();
+        }
+        else{
+            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
+        }
+        ArrayList<Direction> chemin = new ArrayList<Direction>();
+        ArrayList<Direction> temp = new ArrayList<Direction>();
+        SVector3d iterator2 = objetDepart.getPosition();
+        Direction direction = Direction.RIGHT;
+        int i = 0;
+        while(world.isInBounds(iterator2) && i != 2) {
+            SVector3d positionToAdd = new SVector3d();
+            switch (direction) {
+                case UP:
+                    positionToAdd = new SVector3d(0.0, -1.0);
+                    break;
+                case DOWN:
+                    positionToAdd = new SVector3d(0.0, 1.0);
+                    break;
+                case LEFT:
+                    positionToAdd = new SVector3d(-1.0, 0.0);
+                    break;
+                case NONE:
+                case RIGHT:
+                    positionToAdd = new SVector3d(1.0, 0.0);
+                    break;
+            }
+            for(SVector3d iterator = iterator2;world.isInBounds(iterator);iterator = iterator.add(positionToAdd)) {
+                if(iterator.equals(objetArrive.getPosition())) {
+                    chemin.addAll(temp);
+                    return chemin;
+                } else if(iterator.getY()!= objetArrive.getY() && world.get(iterator).getType()==TypeObjet.ECHELLE) {
+                }
+                temp.add(direction);
+            }
+            temp.clear();
+            direction = Direction.LEFT;
+            i++;
+        }
+        return chemin;
+    }
     public ArrayList<Direction> simulate() {
 
         int remainingTries = 10;

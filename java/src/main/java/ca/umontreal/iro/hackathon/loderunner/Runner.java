@@ -1,14 +1,12 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
-import hola.Cheminement;
-import hola.SVector3d;
-import hola.Simulation;
-import hola.World;
+import hola.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -16,16 +14,8 @@ import java.util.ArrayList;
  */
 public class Runner extends BasicRunner {
 
-<<<<<<< .mine
     // TODO : Remplacer ceci par votre clé secrète
     public static final String ROOM = "andylecool";
-||||||| .r44237
-	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "eee";
-=======
-	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "pok";
->>>>>>> .r44252
 
     /*
      * Utilisez cette variable pour choisir le niveau de départ
@@ -33,7 +23,7 @@ public class Runner extends BasicRunner {
      * Notez: le niveau de départ sera 1 pour tout le monde pendant la compétition
      * :v)
      */
-    public static final int START_LEVEL = 1;
+    public static final int START_LEVEL = 2;
 
     public Runner() {
         super(ROOM, START_LEVEL);
@@ -44,7 +34,6 @@ public class Runner extends BasicRunner {
 
     private Direction direction = Direction.NONE;
 
-<<<<<<< .mine
     @Override
     public void start(String[] grid) {
         System.out.println("Nouveau niveau ! Grille initiale reçue :");
@@ -53,37 +42,12 @@ public class Runner extends BasicRunner {
             String ligne = grid[i];
             System.out.println(ligne);
         }
-||||||| .r44237
-	@Override
-	public void start(String[] grid) {
-		System.out.println("Nouveau niveau ! Grille initiale reçue :");
-		world = new World(grid);
-		for (int i = 0; i < grid.length; i++) {
-			String ligne = grid[i];
-			System.out.println(ligne);
-		}
-		
-		JFrame frame = new JFrame("Node Runner");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-=======
-	@Override
-	public void start(String[] grid) {
-		System.out.println("Nouveau niveau ! Grille initiale reçue :");
-		world = new World(grid);
-		for (int i = 0; i < grid.length; i++) {
-			String ligne = grid[i];
-			System.out.println(ligne);
-		}
-		Cheminement cheminement = world.getCheminement();
-        directions = cheminement.path();
-		JFrame frame = new JFrame("Node Runner");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
->>>>>>> .r44252
-
+//		Cheminement cheminement = world.getCheminement();
+//        directions = cheminement.path();
         JFrame frame = new JFrame("Node Runner");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel textLabel = new JLabel("WASD pour bouger, Z et C pour creuser", SwingConstants.CENTER);
+        JLabel textLabel = new JLabel("WASD pour bouger, Z et C asdfasdfpour creuser", SwingConstants.CENTER);
         textLabel.setPreferredSize(new Dimension(300, 100));
 
         frame.getContentPane().add(textLabel, BorderLayout.CENTER);
@@ -92,6 +56,8 @@ public class Runner extends BasicRunner {
 
         frame.setVisible(true);
 
+        // Simulation simulation = new Simulation(world, world.getFricList().get(0));
+        // System.out.println(simulation.simulate());
 
         frame.addKeyListener(new KeyListener() {
             @Override
@@ -118,14 +84,13 @@ public class Runner extends BasicRunner {
                         break;
                     case 'z':
                         break;
+
                     case 'c':
                         break;
-                    case 'p':
-                        world.print();
-                        break;
                 }
-//                 simulation.nextStep(direction);
-//                directions.add(direction);
+                // simulation.nextStep(direction);
+
+                System.out.println("KEY_PRESSED");
             }
 
             @Override
@@ -134,113 +99,128 @@ public class Runner extends BasicRunner {
             }
         });
 
-<<<<<<< .mine
-        world.print();
-||||||| .r44237
-	@Override
-	public Move next(int x, int y) {
-		 System.out.println("Position du runner : (" + x + ", " + y + ")");
-		// world.print();
-		world.move(direction);
-		// world.setRunnerPosition(new SVector3d(x, y));
-=======
+
+//		directions.add(Direction.LEFT);
+//		directions.add(Direction.LEFT);
+//		directions.add(Direction.LEFT);
+
+
+        while (!goToDoor()) {
+            goToFric();
+            if (goToLadder()) {
+                goUpLadder();
+                break;
+            }
+        }
+
+        System.out.println("directions: " + directions);
+
+    }
+
+    public boolean goToFric() {
+        int i = 0;
+        boolean result = false;
+
+        while (i < world.getFricList().size()) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), world.getFricList().get(i));
+            if (directionsTemp.size() != 0) {
+                directions.addAll(directionsTemp);
+                world.moveRunner(world.getFricList().get(i).getPosition());
+                world.getFricList().remove(i);
+                i--;
+                result = true;
+            }
+            i++;
+        }
+        return result;
+    }
+
+    public boolean goToLadder() {
+        int i = 0;
+        boolean result = false;
+
+        ArrayList<WorldObject> tempLadderList = (ArrayList) world.getLadderList().clone();
+        while (i < tempLadderList.size()) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), tempLadderList.get(i));
+            if (directionsTemp.size() != 0) {
+                directions.addAll(directionsTemp);
+                world.moveRunner(tempLadderList.get(i).getPosition());
+                tempLadderList.remove(i);
+                i--;
+                result = true;
+            }
+            i++;
+        }
+        return result;
+    }
+
+    public void goUpLadder() {
+        int i = 0;
+        while (!(goToDoor() && goToFric())) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminUPDOWN(world.getRunnerObject(), tempLadderList.get(i));
+            if (directionsTemp.size() != 0) {
+                directions.addAll(directionsTemp);
+                world.moveRunner(tempLadderList.get(i).getPosition());
+                tempLadderList.remove(i);
+                i--;
+            }
+            i++;
+        }
+        ArrayList<WorldObject> tempLadderList = (ArrayList) world.getLadderList().clone();
+        while (i < tempLadderList.size()) {
+            Simulation simulation = new Simulation(world, new SVector3d());
+            ArrayList<Direction> directionsTemp = simulation.cheminUPDOWN(world.getRunnerObject(), tempLadderList.get(i));
+            if (directionsTemp.size() != 0) {
+                directions.addAll(directionsTemp);
+                world.moveRunner(tempLadderList.get(i).getPosition());
+                tempLadderList.remove(i);
+                i--;
+            }
+            i++;
+        }
+    }
+
+    public boolean goToDoor() {
+        if (!world.getFricList().isEmpty()) {
+            return false;
+        }
+        Simulation simulation = new Simulation(world, new SVector3d());
+
+        ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), world.getPorte());
+        if (directionsTemp != null) {
+            directions.addAll(simulation.cheminAB(world.getRunnerObject(), world.getPorte()));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Move next(int x, int y) {
-//        System.out.println("Position du runner : (" + x + ", " + y + ")");
+        //    System.out.println("Position du runner : (" + x + ", " + y + ")");
 //        world.print();
-        world.move(direction);
+        // world.move(direction);
 //        world.setRunnerPosition(new SVector3d(x, y));
->>>>>>> .r44252
 
-<<<<<<< .mine
-||||||| .r44237
-		// int direction = 0;//(int) (Math.random() * 4 + 1);
-=======
 //        int direction = 0;//(int) (Math.random() * 4 + 1);
->>>>>>> .r44252
 
-<<<<<<< .mine
-        System.out.println(world.dontComeBack + " AFD ADSF ");
-        Simulation simulation = new Simulation(world, new SVector3d(0.0, 5.0));//world.getPorte().getPosition());
-        ArrayList<Direction> asdf = simulation.simulate();
-        System.out.println(asdf);
-//        System.out.println(world.dontComeBack + " AFD ADSF ");
-//        directions = asdf;
-||||||| .r44237
-		// Direction dir = Direction.fromInt(direction);
-		Cheminement cheminement = world.getCheminement();
-		directions = cheminement.chemin(world.getRunnerObject().getPosition(), world.getPorte().getPosition(),Direction.RIGHT);
-		// Direction dir = direction;
-		directions.add(direction);
-		Direction dir = executerNext(directions);
-=======
 //        Direction dir = Direction.fromInt(direction);
-        
+
 //        Direction dir = direction;
-        directions.add(direction);
-        Direction dir = executerNext(directions);
->>>>>>> .r44252
+        Direction dir;
+        if (direction != Direction.NONE) {
+            dir = direction;
+        } else {
 
-<<<<<<< .mine
-||||||| .r44237
-		// System.out.println("\n\n\n");
-		return new Move(Event.MOVE, dir);
-	}
-=======
+            dir = executerNext(directions);
+        }
+
+//		System.out.println(dir);
+        // Direction dir = direction;
+
 //        System.out.println("\n\n\n");
-        return new Move(Event.MOVE, dir);
-    }
-    public Direction executerNext(ArrayList<Direction> directions ) {
-    	if(directions.isEmpty()==false) {
-    		return directions.remove(0);
-    	}
-    	return Direction.NONE;
-    }
-}
->>>>>>> .r44252
-
-<<<<<<< .mine
-    }
-
-
-
-    @Override
-    public Move next(int x, int y) {
-//		 System.out.println("Position du runner : (" + x + ", " + y + ")");
-        // world.setRunnerPosition(new SVector3d(x, y));
-
-        // int direction = 0;//(int) (Math.random() * 4 + 1);
-
-        // Direction dir = Direction.fromInt(direction);
-
-
-//		Cheminement cheminement = world.getCheminement();
-//		directions = cheminement.chemin(world.getRunnerObject().getPosition(), world.getPorte().getPosition(),Direction.RIGHT);
-
-
-        Direction dir = direction;
-//        directions.add(direction);
-//        Direction dir = executerNext(directions);
-
-        boolean xd = world.move(dir);
-//        System.out.println(xd);
-
-        if (!xd) {
-            dir = Direction.NONE;
-        }
-        else{
-
-            if (direction != Direction.NONE) {
-                world.print();
-            }
-
-            if(world.getPorte().getPosition().equals(world.getRunnerObject().getPosition())){
-                System.out.println("ADFJ JDFJADF JASDJF AJD FA FASDF JASDF JASDJFASDJF AJSDFJASDJFASJDFA##JSFD");
-            }
-        }
-
-//        System.out.println(world.move(dir));
-        // System.out.println("\n\n\n");
         return new Move(Event.MOVE, dir);
     }
 
@@ -251,15 +231,6 @@ public class Runner extends BasicRunner {
         return Direction.NONE;
     }
 
+
 }
-||||||| .r44237
-	public Direction executerNext(ArrayList<Direction> directions) {
-		if (directions.isEmpty() == false) {
-			return directions.remove(0);
-		}
-		return Direction.NONE;
-	}
-    
-}
-=======
->>>>>>> .r44252
+

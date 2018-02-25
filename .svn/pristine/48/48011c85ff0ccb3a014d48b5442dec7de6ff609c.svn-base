@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
 	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "eee";
+	public static final String ROOM = "pak";
 
 	/*
 	 * Utilisez cette variable pour choisir le niveau de départ
@@ -43,7 +43,8 @@ public class Runner extends BasicRunner {
 			String ligne = grid[i];
 			System.out.println(ligne);
 		}
-		
+		Cheminement cheminement = world.getCheminement();
+        directions = cheminement.path();
 		JFrame frame = new JFrame("Node Runner");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -90,7 +91,6 @@ public class Runner extends BasicRunner {
 				// simulation.nextStep(direction);
 
 			}
-
 			@Override
 			public void keyReleased(KeyEvent e) {
 				direction = Direction.NONE;
@@ -99,31 +99,29 @@ public class Runner extends BasicRunner {
 
 	}
 
-	@Override
-	public Move next(int x, int y) {
-		 System.out.println("Position du runner : (" + x + ", " + y + ")");
-		// world.print();
-		world.move(direction);
-		// world.setRunnerPosition(new SVector3d(x, y));
+    @Override
+    public Move next(int x, int y) {
+//        System.out.println("Position du runner : (" + x + ", " + y + ")");
+//        world.print();
+        world.move(direction);
+//        world.setRunnerPosition(new SVector3d(x, y));
 
-		// int direction = 0;//(int) (Math.random() * 4 + 1);
+//        int direction = 0;//(int) (Math.random() * 4 + 1);
 
-		// Direction dir = Direction.fromInt(direction);
-		Cheminement cheminement = world.getCheminement();
-		directions = cheminement.chemin(world.getRunnerObject().getPosition(), world.getPorte().getPosition(),Direction.RIGHT);
-		// Direction dir = direction;
-		directions.add(direction);
-		Direction dir = executerNext(directions);
+//        Direction dir = Direction.fromInt(direction);
+        
+//        Direction dir = direction;
+        directions.add(direction);
+        Direction dir = executerNext(directions);
 
-		// System.out.println("\n\n\n");
-		return new Move(Event.MOVE, dir);
-	}
-
-	public Direction executerNext(ArrayList<Direction> directions) {
-		if (directions.isEmpty() == false) {
-			return directions.remove(0);
-		}
-		return Direction.NONE;
-	}
-    
+//        System.out.println("\n\n\n");
+        return new Move(Event.MOVE, dir);
+    }
+    public Direction executerNext(ArrayList<Direction> directions ) {
+    	if(directions.isEmpty()==false) {
+    		return directions.remove(0);
+    	}
+    	return Direction.NONE;
+    }
 }
+

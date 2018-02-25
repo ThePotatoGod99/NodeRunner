@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
 	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "pok";
+	public static final String ROOM = "pak";
 
 	/*
 	 * Utilisez cette variable pour choisir le niveau de départ
@@ -48,7 +48,7 @@ public class Runner extends BasicRunner {
 		JFrame frame = new JFrame("Node Runner");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JLabel textLabel = new JLabel("WASD pour bouger, Z et C pour creuser", SwingConstants.CENTER);
+		JLabel textLabel = new JLabel("WASD pour bouger, Z et C asdfasdfpour creuser", SwingConstants.CENTER);
 		textLabel.setPreferredSize(new Dimension(300, 100));
 
 		frame.getContentPane().add(textLabel, BorderLayout.CENTER);
@@ -56,7 +56,7 @@ public class Runner extends BasicRunner {
 		frame.pack();
 
 		frame.setVisible(true);
-
+	
 		// Simulation simulation = new Simulation(world, world.getFricList().get(0));
 		// System.out.println(simulation.simulate());
 
@@ -90,6 +90,7 @@ public class Runner extends BasicRunner {
 				}
 				// simulation.nextStep(direction);
 
+				System.out.println("KEY_PRESSED");
 			}
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -101,9 +102,9 @@ public class Runner extends BasicRunner {
 
     @Override
     public Move next(int x, int y) {
-//        System.out.println("Position du runner : (" + x + ", " + y + ")");
+    //    System.out.println("Position du runner : (" + x + ", " + y + ")");
 //        world.print();
-        world.move(direction);
+        // world.move(direction);
 //        world.setRunnerPosition(new SVector3d(x, y));
 
 //        int direction = 0;//(int) (Math.random() * 4 + 1);
@@ -111,8 +112,11 @@ public class Runner extends BasicRunner {
 //        Direction dir = Direction.fromInt(direction);
         
 //        Direction dir = direction;
-        directions.add(direction);
-        Direction dir = executerNext(directions);
+		Direction dir = executerNext(directions);
+		if(direction != Direction.NONE){
+			dir = direction;
+		}
+		// Direction dir = direction;
 
 //        System.out.println("\n\n\n");
         return new Move(Event.MOVE, dir);
@@ -123,5 +127,8 @@ public class Runner extends BasicRunner {
     	}
     	return Direction.NONE;
     }
+
+
+
 }
 

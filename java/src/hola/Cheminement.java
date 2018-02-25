@@ -75,7 +75,7 @@ public class Cheminement {
 		}
 		finale.addAll(cheminAB(world.getRunnerObject(),world.getPorte()));
 		
-		
+
 		return finale;
 		
 	}
