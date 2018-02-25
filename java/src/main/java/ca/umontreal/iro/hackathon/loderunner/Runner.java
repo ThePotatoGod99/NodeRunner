@@ -104,28 +104,28 @@ public class Runner extends BasicRunner {
 //		directions.add(Direction.LEFT);
 
 
-        while (!goToDoorOrLadder()) {
-
-//        goToDoorOrLadder();
-            world.printString();
-            goUpLadder();
-            world.printString();
-            goToFric();
-            goToDoor();
-
-
-        }
-//        goToDoorOrLadder();
-        System.out.println(goToFric());
-
-//        while (!goToDoor()) {
-//            goToFric();
-//            if (goToLadder()) {
-//                goUpLadder();
+//        while (!goToDoorOrLadder()) {
 //
-//            }
+////        goToDoorOrLadder();
 //            world.printString();
+//            goUpLadder();
+//            world.printString();
+//            goToFric();
+//            goToDoor();
+//
+//
 //        }
+//        goToDoorOrLadder();
+//        System.out.println(goToFric());
+
+        while (!goToDoor()) {
+            goToFric();
+            if (goToLadder()) {
+                goUpLadder();
+
+            }
+            world.printString();
+        }
 
         System.out.println("directions: " + directions);
 
@@ -192,7 +192,7 @@ public class Runner extends BasicRunner {
         int i = 0;
 
         Simulation simulation = new Simulation(world, new SVector3d());
-        Simulation.CheminEtPos cheminEtPos = simulation.cheminUPDOWN(world.getRunnerObject());
+        CheminEtPos cheminEtPos = simulation.cheminUPDOWN(world.getRunnerObject());
         ArrayList<Direction> directionsTemp = cheminEtPos.getDirections();
         System.out.println("ASDF ASDF ASD" + directionsTemp);
         if (directionsTemp.size() != 0) {
