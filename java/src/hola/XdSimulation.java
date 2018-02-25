@@ -152,17 +152,17 @@ public class XdSimulation {
                 "             $#H         H",
                 "              #H         H",
                 "        ------#H         H",
-                "       $      #H& H      H",
+                "       $      #H  H      H",
+//                "       $      #H& H      H",
                 "#########     ####H     $H",
                 "                 #H      H",
-                " S               #H      H",
+                " S               #H  &   H",
                 "@@@@@@@@@@@@@@@@@@@@@@@@@@"
         };
         XdSimulation xdSimulation = new XdSimulation(grid6);
         Simulation sim = new Simulation(grid6);
         xdSimulation.getWorld().printString();
         xdSimulation.simulateXd(sim, 0);
-
 
 
 //        xdSimulation.simulateXd(sim);
@@ -209,24 +209,66 @@ public class XdSimulation {
         xdSimulation.simulate(dir4);*/
     }
 
-    public boolean simulateXd(Simulation sim, int step) {
+    public boolean simulate2(Simulation sim) {
+       /* tryGoDownXD(sim);
+        tryGoToLadder(sim);
+        tryGoUpLadder(sim);
+        tryGoToLadder(sim);
 
-        int i = 0;
-        while(i < 10) {
+        tryGoUpLadderNoStop(sim);
+        tryDropGauche(sim);
+        tryDropGauche(sim);
+*/
+        return tryToDecalise(sim);
+    }
+
+    public boolean simulateXd(Simulation sim, int step) {
+        System.out.println(step);
+        if (step == 0) {
+            tryGoToLadder(sim);
+            tryGoToLadder(sim);
+        }
+
+        if (step == 1) {
+            tryGoDownXD(sim);
+
+        }
+        if(step == 2){
+            tryGoToLadder(sim);
+            tryGoToLadder(sim);
+            world.printString();
+            tryGoUpLadder(sim);
+            world.printString();
+            tryGoUpLadderNoStop(sim);
+
+        }
+
+
+//        tryGoUpLadderNoStop(sim);
+//        tryGoToFric(sim);
+
+//        int i = 0;
+       /* while(i < 10) {
             tryGoToFric(sim);
             if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE) {
                 tryGoUpLadder(sim);
             }
             if(world.fricsAreDown()){
 
+                System.out.println(" PPP" + tryGoDownOnw(sim));
+                tryGoDownXD(sim);
+                System.out.println(sim.goDownXD(world.getStringList(), world.getRunnerObject()));
+                world.printString();
+                return false;
+//                tryDropGauche(sim);
             }
             i++;
         }
 
-        return true;
+        return true;*/
+/*
 
-
-       /* int i = 0;
+        int i = 0;
         while (!this.simulate(this.goToDoor(sim)) && i < 10) {
             if (this.simulate(this.goToFric(sim))) {
                 i = 0;
@@ -252,12 +294,9 @@ public class XdSimulation {
 
         System.out.println("PG" + i);
         if (i >= 10) {
-            System.out.println("PGOTOROPE");
-            System.out.println(this.goToRope(sim) + " PGPGPG");
             i = 0;
 //            while (!this.goToRope(sim).isEmpty() && i < 10) {
             this.simulate(this.goToRope(sim));
-            System.out.println("DOWN " + this.goDownOne(sim));
             this.simulate(this.goDownOne(sim));
             if (this.simulate(this.goToDoor(sim))) {
 
@@ -277,29 +316,41 @@ public class XdSimulation {
                 }
             }
             if (!world.getFricList().isEmpty()) {
-                return simulateXd(sim);
+
+                return simulate2(sim);
+//                return simulateXd(sim, 0);
             } else {
                 return decalissePlz(sim, 0);
             }
 //            }
 
         }*/
+        return false;
     }
 
 
+    public boolean tryGoDownXD(Simulation sim) {
+        return this.simulate(this.goDownXD(sim));
+    }
 
-    public boolean tryDropGauche(Simulation sim){
+    public boolean tryDropGauche(Simulation sim) {
         return this.simulate(this.goDropGauche(sim));
     }
+
     public boolean tryGoToFric(Simulation sim) {
         return this.simulate(this.goToFric(sim));
     }
+
     public boolean tryToDecalise(Simulation sim) {
         return this.simulate(this.goToDoor(sim));
     }
 
     public boolean tryGoToLadder(Simulation sim) {
         return this.simulate(this.goToLadder(sim));
+    }
+
+    public boolean tryGoUpLadderNoStop(Simulation sim) {
+        return this.simulate(this.goUpLadderNoStop(sim));
     }
 
     public boolean tryGoUpLadder(Simulation sim) {
@@ -330,7 +381,7 @@ public class XdSimulation {
             return decalissePlz(sim, step + 1);
         }
 
-        return decalissePlz(sim, step+ 1);
+        return decalissePlz(sim, step + 1);
 //        }
 
 //        return true;
@@ -340,6 +391,12 @@ public class XdSimulation {
         ArrayList<Direction> direction1 = sim.goDropGauche(this.getGrid(), this.getWorld().getRunnerObject());
         return direction1;
     }
+
+    public ArrayList<Direction> goDownXD(Simulation sim) {
+        ArrayList<Direction> direction1 = sim.goDownXD(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
+
     public ArrayList<Direction> goDownOne(Simulation sim) {
         ArrayList<Direction> direction1 = sim.goDownOne(this.getGrid(), this.getWorld().getRunnerObject());
         return direction1;
@@ -367,6 +424,11 @@ public class XdSimulation {
 
     public ArrayList<Direction> goToLadder(Simulation sim) {
         ArrayList<Direction> direction1 = sim.goToLadder(this.getGrid(), this.getWorld().getRunnerObject());
+        return direction1;
+    }
+
+    public ArrayList<Direction> goUpLadderNoStop(Simulation sim) {
+        ArrayList<Direction> direction1 = sim.goUpLadderNoStop(this.getGrid(), this.getWorld().getRunnerObject());
         return direction1;
     }
 

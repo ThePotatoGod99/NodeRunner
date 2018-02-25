@@ -189,7 +189,22 @@ public class Simulation {
         return directionList;
 
     }
+    public ArrayList<Direction> goUpLadderNoStop(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+        SVector3d pos = runnerObject.getPosition();
+        if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE) {
 
+            while (world.canMove(Direction.UP)) {
+                System.out.println(world.getActualRunPos());
+                pos = pos.add(World.directionToVector(Direction.UP));
+                world.initPlayer(pos);
+                directionList.add(Direction.UP);
+            }
+        }
+        return directionList;
+    }
     public ArrayList<Direction> goUpLadder(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
         world.initPlayer(runnerObject.getPosition());
@@ -210,6 +225,22 @@ public class Simulation {
         return directionList;
     }
 
+    public ArrayList<Direction> goDownXD(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+        SVector3d pos = runnerObject.getPosition();
+        System.out.println(world.get(world.getActualRunPos()).getType());
+        if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE || world.get(world.getActualRunPos()).getType() == TypeObjet.ESPACE) {
+            while (world.canMove(Direction.DOWN)) {
+                pos = pos.add(World.directionToVector(Direction.DOWN));
+                world.initPlayer(pos);
+                directionList.add(Direction.DOWN);
+            }
+        }
+        return directionList;
+    }
+
     /*public ArrayList<Direction> goDropGauche(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
         world.initPlayer(runnerObject.getPosition());
@@ -221,10 +252,13 @@ public class Simulation {
         world.initPlayer(runnerObject.getPosition());
         ArrayList<Direction> directionList = new ArrayList<>();
 
+//        directionList.add(Direction.DOWN);
+//        System.out.println("AAAAA");
         directionList.add(Direction.LEFT);
-        directionList.add(Direction.DOWN);
         return directionList;
     }
+
+
 
     public ArrayList<Direction> goDownLadder(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
