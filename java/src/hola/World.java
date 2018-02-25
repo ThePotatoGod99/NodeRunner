@@ -184,6 +184,7 @@ public class World implements Cloneable {
         if(spaceIsAvailable(nextPos)){
 
             WorldObject objectAtCurr = get(getActualRunPos());
+            WorldObject objectAtNext = get(nextPos);
 
 
             /* Test if ladder up */
@@ -196,7 +197,8 @@ public class World implements Cloneable {
             /* Test if corde down */
 
             else if(direction == Direction.DOWN){
-                if(objectAtCurr.getType() == TypeObjet.CORDE){
+                if(objectAtCurr.getType() == TypeObjet.CORDE || objectAtNext.getType() == TypeObjet.ECHELLE || objectAtNext.getType() == TypeObjet.ESPACE){
+                    System.out.println("HOLA + " + getActualRunPos() + " :" + nextPos +  spaceIsAvailable(nextPos) + " :" + direction);
                     if(spaceIsAvailable(nextPos)){
                         return true;
                     }
@@ -357,6 +359,15 @@ public class World implements Cloneable {
     // }
     // }
 
+
+    public boolean fricsAreDown(){
+        for(WorldObject fric : fricList){
+            if(fric.getPosition().getY() <= actualRunPos.getY()){
+                return false;
+            }
+        }
+        return true;
+    }
     public void change(SVector3d position, WorldObject newObject) {
         this.change((int) position.getX(), (int) position.getY(), newObject);
     }

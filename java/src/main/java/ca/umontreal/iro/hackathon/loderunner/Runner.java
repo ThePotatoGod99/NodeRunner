@@ -1,9 +1,6 @@
 package main.java.ca.umontreal.iro.hackathon.loderunner;
 
-import hola.Cheminement;
-import hola.SVector3d;
-import hola.Simulation;
-import hola.World;
+import hola.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +14,7 @@ import java.util.ArrayList;
 public class Runner extends BasicRunner {
 
 	// TODO : Remplacer ceci par votre clé secrète
-	public static final String ROOM = "andylecool1";
+	public static final String ROOM = "andylecool";
 
 	/*
 	 * Utilisez cette variable pour choisir le niveau de départ
@@ -25,7 +22,7 @@ public class Runner extends BasicRunner {
 	 * Notez: le niveau de départ sera 1 pour tout le monde pendant la compétition
 	 * :v)
 	 */
-	public static final int START_LEVEL = 5;
+	public static final int START_LEVEL = 6;
 
 	public Runner() {
 		super(ROOM, START_LEVEL);
@@ -45,7 +42,10 @@ public class Runner extends BasicRunner {
 			System.out.println(ligne);
 		}
 		Cheminement cheminement = world.getCheminement();
-        directions = cheminement.path();
+//        directions = cheminement.path();
+
+//		Simulation simulation = new Simulation(world, new SVector3d());
+//		directions.addAll(simulation.simulate());
 
 		JFrame frame = new JFrame("Node Runner");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -100,7 +100,14 @@ public class Runner extends BasicRunner {
 			}
 		});
 
-		System.out.println(" DirectIONS FINALES " + directions );
+		XdSimulation xdSimulation = new XdSimulation(grid);
+		World world2 = new World(xdSimulation.getWorld().getStringList());
+		Simulation sim = new Simulation(grid);
+
+
+//		xdSimulation.simulateXd(sim);
+
+		directions.addAll(xdSimulation.getDirections());
 
 	}
 
@@ -137,9 +144,11 @@ public class Runner extends BasicRunner {
     	}
     	world.moveRunner(world.getActualRunPos());
 		world.printString();
-		Cheminement cheminement = world.getCheminement();
-		this.directions = cheminement.path2();
-		System.out.println("FINISHED " + this.directions);
+
+		//TODO: i, go to door, go to frick...
+//		Cheminement cheminement = world.getCheminement();
+//		this.directions = cheminement.path();
+//		System.out.println("FINISHED " + this.directions);
     	return Direction.NONE;
     }
 

@@ -25,7 +25,7 @@ public class Simulation {
 //            System.out.println("No shit");
             return new ArrayList<Direction>();
         } else {
-            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
+//            System.out.println(objetArrive.getPosition() + " : " + objetDepart.getPosition());
         }
         ArrayList<Direction> chemin = new ArrayList<Direction>();
         ArrayList<Direction> temp = new ArrayList<Direction>();
@@ -50,7 +50,6 @@ public class Simulation {
                     break;
             }
             for (SVector3d iterator = iterator2; world.isInBounds(iterator); iterator = iterator.add(positionToAdd)) {
-                System.out.println(" ADFDSF A ADADADF AD D" + iterator + objetArrive.getPosition());
                 if (iterator.equals(objetArrive.getPosition())) {
                     chemin.addAll(temp);
                     return chemin;
@@ -82,6 +81,7 @@ public class Simulation {
 
     public static boolean goToFric2(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
         int i = 0;
         while (i < world.getFricList().size()) {
             Simulation simulation = new Simulation(world.getStringList());
@@ -97,6 +97,7 @@ public class Simulation {
 
     public static ArrayList<Direction> goToFric(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
 //        System.out.println("GoToFric");
         int i = 0;
         boolean result = false;
@@ -119,6 +120,7 @@ public class Simulation {
 
     public static ArrayList<Direction> goToLadder(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
 //        System.out.println("goToLadder");
         int i = 0;
         boolean result = false;
@@ -142,18 +144,89 @@ public class Simulation {
         return directionList;
     }
 
+    public static ArrayList<Direction> goToRope(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        int i = 0;
+        boolean result = false;
+
+        ArrayList<Direction> directionList = new ArrayList<>();
+        ArrayList<WorldObject> tempRopeList = (ArrayList) world.getRopeList().clone();
+        while (i < tempRopeList.size()) {
+            Simulation simulation = new Simulation(world.getStringList());
+            SVector3d posiUnder = tempRopeList.get(i).getPosition().add(World.directionToVector(Direction.DOWN));
+
+            if (world.spaceIsAvailable(posiUnder)) {
+
+                ArrayList<Direction> directionsTemp = simulation.cheminAB(world.getRunnerObject(), tempRopeList.get(i));
+                if (directionsTemp.size() != 0) {
+
+                    directionList.addAll(directionsTemp);
+                    world.moveRunner(tempRopeList.get(i).getPosition());
+                    tempRopeList.remove(i);
+                    i--;
+                    result = true;
+                    return directionList;
+                }
+            }
+            i++;
+        }
+        return directionList;
+    }
+
+    public static ArrayList<Direction> goDownOne(String[] grid, RunnerObject runnerObject) {
+
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+
+        ArrayList<Direction> directionList = new ArrayList<>();
+
+        System.out.println(runnerObject.getPosition() + " : " + world.canMove(Direction.DOWN) + world.canMove(Direction.DOWN) + " ++++");
+        if (world.canMove(Direction.DOWN)) {
+            System.out.println("CAN MOVE DOWN");
+            directionList.add(Direction.DOWN);
+        }
+        return directionList;
+
+    }
+
     public ArrayList<Direction> goUpLadder(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
         ArrayList<Direction> directionList = new ArrayList<>();
         SVector3d pos = runnerObject.getPosition();
         if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE) {
 
             while (world.canMove(Direction.UP)) {
-                System.out.println(world.getActualRunPos() );
+                System.out.println(world.getActualRunPos());
                 pos = pos.add(World.directionToVector(Direction.UP));
                 world.initPlayer(pos);
                 directionList.add(Direction.UP);
-                if(goToFric2(world.getStringList(), world.getRunnerObject())){
+                if (goToFric2(world.getStringList(), world.getRunnerObject())) {
+                    return directionList;
+                }
+            }
+        }
+        return directionList;
+    }
+
+    public 
+    public ArrayList<Direction> goDownLadder(String[] grid, RunnerObject runnerObject) {
+        World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
+        ArrayList<Direction> directionList = new ArrayList<>();
+        SVector3d pos = world.getActualRunPos();
+
+
+        SVector3d nextPos = pos.add(World.directionToVector(Direction.DOWN));
+        if (world.get(nextPos).getType() == TypeObjet.ECHELLE) {
+
+            while (world.canMove(Direction.DOWN)) {
+                pos = pos.add(World.directionToVector(Direction.DOWN));
+                world.initPlayer(pos);
+                directionList.add(Direction.DOWN);
+
+                if (goToFric2(world.getStringList(), world.getRunnerObject())) {
                     return directionList;
                 }
             }
@@ -162,28 +235,9 @@ public class Simulation {
 
     }
 
-    public ArrayList<Direction> goDownLadder(String[] grid, RunnerObject runnerObject) {
-        return null;
-       /* World world = new World(grid, runnerObject.getPosition());
-        ArrayList<Direction> directionList = new ArrayList<>();
-        SVector3d pos = runnerObject.getPosition();
-        if (world.get(world.getActualRunPos()).getType() == TypeObjet.ECHELLE) {
-
-            while (world.canMove(Direction.UP)) {
-                System.out.println(world.getActualRunPos() );
-                pos = pos.add(World.directionToVector(Direction.UP));
-                world.initPlayer(pos);
-                directionList.add(Direction.UP);
-                if(goToFric2(world.getStringList(), world.getRunnerObject())){
-                    return directionList;
-                }
-            }
-        }
-        return directionList;*/
-
-    }
-    public static ArrayList<Direction>  goToDoor(String[] grid, RunnerObject runnerObject) {
+    public static ArrayList<Direction> goToDoor(String[] grid, RunnerObject runnerObject) {
         World world = new World(grid, runnerObject.getPosition());
+        world.initPlayer(runnerObject.getPosition());
 
         ArrayList<Direction> directionList = new ArrayList<>();
 
